@@ -69,10 +69,10 @@ const Dropdown: React.FC<DropdownProps> = ({
           if (!hasOptions) return;
           setIsOpen(!isOpen);
         }}
-        className={`w-full flex items-center justify-between px-4 py-2 rounded-lg transition ${
+        className={`w-full flex items-center justify-between px-3 py-2 rounded-md transition ${
   isDarkMode
-    ? "bg-gray-800 text-white hover:bg-gray-700"
-    : "bg-white text-black hover:bg-gray-200"
+    ? "bg-gray-800 text-white hover:bg-gray-700 border border-gray-700"
+    : "bg-white text-black hover:bg-gray-200 border border-gray-300"
 }`}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
@@ -91,20 +91,24 @@ const Dropdown: React.FC<DropdownProps> = ({
       {isOpen && hasOptions && (
         <div
   role="listbox"
-  className={`absolute mt-2 w-full rounded-lg shadow-lg z-10 ${
-    isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
-  }`}
+  className={`absolute mt-2 w-full rounded-md shadow-lg z-10 ${
+  isDarkMode
+    ? "bg-gray-800 text-white border border-gray-700"
+    : "bg-white text-black border border-gray-300"
+}`}
 >
           {safeOptions.map((option) => (
             <button
               key={option.value}
-              className={`block w-full text-left px-4 py-2 ${
-  isDarkMode ? "hover:bg-gray-700" : "hover:bg-gray-200"
+              className={`block w-full text-left px-3 py-2 ${
+  isDarkMode
+    ? "hover:bg-gray-700"
+    : "hover:bg-gray-200"
 } ${
   option.value === value
     ? isDarkMode
-      ? "bg-gray-700 font-semibold"
-      : "bg-gray-300 font-semibold"
+      ? "bg-gray-700"
+      : "bg-gray-300"
     : ""
 }`}
               onClick={() => handleSelect(option)}
