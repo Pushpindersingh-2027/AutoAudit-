@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-import "./Dashboard.css";
 import ComplianceChart from "../components/ComplianceChart";
 import Dropdown from "../components/Dropdown";
 import { useNavigate } from "react-router-dom";
@@ -108,27 +107,35 @@ export default function Dashboard({
       if (!token) return;
       setIsLoading(true);
       setError(null);
+
       try {
         const [scansData, connectionsData, benchmarksData] = await Promise.all([
           getScans(token),
           getConnections(token),
           getBenchmarks(token),
         ]);
+
         setScans((scansData as ApiScanSummary[] | null | undefined) || []);
         setConnections((connectionsData as ApiConnection[] | null | undefined) || []);
         setBenchmarksState((benchmarksData as ApiBenchmark[] | null | undefined) || []);
 
-        // Prefer the latest completed scan as the default context.
         const completed = ((scansData as ApiScanSummary[] | null | undefined) || []).filter(
           (s) => s.status === "completed"
         );
-        const latestCompleted = completed.length > 0 ? completed[0] : null; // API sorts started_at desc
+        const latestCompleted = completed.length > 0 ? completed[0] : null;
+
         if (latestCompleted) {
           if (latestCompleted.m365_connection_id) {
             setSelectedConnectionId(String(latestCompleted.m365_connection_id));
           }
-          if (latestCompleted.framework && latestCompleted.benchmark && latestCompleted.version) {
-            setSelectedBenchmarkKey(`${latestCompleted.framework}|${latestCompleted.benchmark}|${latestCompleted.version}`);
+          if (
+            latestCompleted.framework &&
+            latestCompleted.benchmark &&
+            latestCompleted.version
+          ) {
+            setSelectedBenchmarkKey(
+              `${latestCompleted.framework}|${latestCompleted.benchmark}|${latestCompleted.version}`
+            );
           }
         }
       } catch (err: unknown) {
@@ -145,10 +152,12 @@ export default function Dashboard({
     const m365 = (benchmarks || []).filter(
       (b) => String(b.platform || "").toLowerCase() === "m365"
     );
+
     const opts = m365.map((b) => ({
       value: `${b.framework || ""}|${b.slug || ""}|${b.version || ""}`,
       label: `${b.name || "Benchmark"} (${b.version || "—"})`,
     }));
+
     return [{ value: "all", label: "All benchmarks" }, ...opts];
   }, [benchmarks]);
 
@@ -157,21 +166,25 @@ export default function Dashboard({
       value: String(c.id),
       label: c.name || `Connection #${c.id}`,
     }));
+
     return [{ value: "all", label: "All connections" }, ...opts];
   }, [connections]);
 
   const filteredScans = useMemo(() => {
     let out = scans || [];
+
     if (selectedConnectionId !== "all") {
       out = out.filter(
         (s) => String(s.m365_connection_id || "") === selectedConnectionId
       );
     }
+
     if (selectedBenchmarkKey !== "all") {
       out = out.filter(
         (s) => `${s.framework}|${s.benchmark}|${s.version}` === selectedBenchmarkKey
       );
     }
+
     return out;
   }, [scans, selectedConnectionId, selectedBenchmarkKey]);
 
@@ -188,7 +201,6 @@ export default function Dashboard({
     const failed = Number(s?.failed_count || 0);
     const errors = Number(s?.error_count || 0);
     const skipped = Number(s?.skipped_count || 0);
-    const totalControls = Number(s?.total_controls || 0);
 
     if (selectedChartType === "bar") {
       const completed = (filteredScans || [])
@@ -199,11 +211,8 @@ export default function Dashboard({
 
       const labels = completed.map((x) => `#${x.id}`);
       const values = completed.map((x) => {
-        const total = Number(x.total_controls || 0);
         const pass = Number(x.passed_count || 0);
         const fail = Number(x.failed_count || 0);
-        // Compliance is based on determinate outcomes only.
-        // Exclude errored/skipped controls from pass/fail denominator.
         const evaluated = pass + fail;
         return evaluated > 0 ? Math.round((pass / evaluated) * 100) : 0;
       });
@@ -211,17 +220,19 @@ export default function Dashboard({
       return { chartType: "bar", labels, values };
     }
 
-    // Default: Pass / Fail (+ optional Error / Skipped)
-    const labels = ['Pass', 'Fail'];
+    const labels = ["Pass", "Fail"];
     const values = [passed, failed];
+
     if (errors > 0) {
-      labels.push('Error');
+      labels.push("Error");
       values.push(errors);
     }
+
     if (skipped > 0) {
-      labels.push('Skipped');
+      labels.push("Skipped");
       values.push(skipped);
     }
+
     return { chartType: selectedChartType, labels, values };
   }, [selectedChartType, latestRelevantScan, filteredScans]);
 
@@ -237,10 +248,10 @@ export default function Dashboard({
       const id = latestRelevantScan?.id;
       if (!id) return;
 
-      // Cache scan details in-memory to avoid refetching on minor UI changes.
       if (scanDetailsById[id]) return;
 
       setScanDetailsError(null);
+
       try {
         const detail = (await getScan(token, id)) as ApiScanDetail;
         setScanDetailsById((prev) => ({ ...prev, [id]: detail }));
@@ -264,6 +275,7 @@ export default function Dashboard({
     const evaluated = passed + failed;
     const pending = Math.max(0, total - evaluated - errors - skipped);
     const hasTotal = total > 0;
+
     const formatCount = (value: unknown) => {
       const num = Number(value);
       return Number.isFinite(num) ? num.toLocaleString() : "—";
@@ -276,67 +288,81 @@ export default function Dashboard({
     const connectionLabel =
       s?.connection_name ||
       (s?.m365_connection_id ? `Connection #${s.m365_connection_id}` : "—");
+
     const isCompleted = String(s?.status || "").toLowerCase() === "completed";
-    const lastScanLabel = (isCompleted ? (s?.finished_at || s?.started_at) : (s?.started_at || s?.finished_at)) || null;
-    const dt = lastScanLabel ? formatDateTimePartsAEST(lastScanLabel) : { date: '-', time: '-' };
-    const lastTime = dt.time !== '-' ? dt.time : '—';
-    const lastDate = dt.date !== '-' ? dt.date : '—';
+    const lastScanLabel =
+      (isCompleted ? s?.finished_at || s?.started_at : s?.started_at || s?.finished_at) ||
+      null;
+
+    const dt = lastScanLabel
+      ? formatDateTimePartsAEST(lastScanLabel)
+      : { date: "-", time: "-" };
+
+    const lastTime = dt.time !== "-" ? dt.time : "—";
+    const lastDate = dt.date !== "-" ? dt.date : "—";
 
     const subtitle = !hasScan
-      ? 'No scans yet'
-      : `${isCompleted ? 'Latest completed scan' : 'Latest scan'}${hasTotal ? ` • ${formatCount(evaluated)} evaluated` : ''}`;
+      ? "No scans yet"
+      : `${isCompleted ? "Latest completed scan" : "Latest scan"}${
+          hasTotal ? ` • ${formatCount(evaluated)} evaluated` : ""
+        }`;
 
     const kpis = [
       {
-        label: compliancePct === null ? 'Compliance —' : `Compliance ${compliancePct}%`,
+        label: compliancePct === null ? "Compliance —" : `Compliance ${compliancePct}%`,
         tone: complianceTone,
         icon: CheckCircle2,
       },
       {
-        label: hasTotal ? `${formatCount(failed)} failed` : 'Failed —',
+        label: hasTotal ? `${formatCount(failed)} failed` : "Failed —",
         tone: failedTone,
         icon: AlertTriangle,
       },
       {
-        label: hasTotal ? `${formatCount(total)} total` : 'Total —',
-        tone: 'neutral',
+        label: hasTotal ? `${formatCount(total)} total` : "Total —",
+        tone: "neutral",
         icon: Shield,
       },
       {
         label: `Updated ${lastTime}`,
-        tone: 'neutral',
+        tone: "neutral",
         icon: Clock3,
       },
     ];
 
     const groups = [
       {
-        title: 'Evaluation',
+        title: "Evaluation",
         items: [
-          { label: 'Evaluated', value: hasTotal ? `${formatCount(evaluated)} of ${formatCount(total)}` : '—' },
-          { label: 'Passed', value: hasTotal ? formatCount(passed) : '—' },
-          { label: 'Failed', value: hasTotal ? formatCount(failed) : '—' },
+          {
+            label: "Evaluated",
+            value: hasTotal ? `${formatCount(evaluated)} of ${formatCount(total)}` : "—",
+          },
+          { label: "Passed", value: hasTotal ? formatCount(passed) : "—" },
+          { label: "Failed", value: hasTotal ? formatCount(failed) : "—" },
         ],
       },
       {
-        title: 'Quality',
+        title: "Quality",
         items: [
-          { label: 'Errors', value: hasTotal ? formatCount(errors) : '—' },
-          { label: 'Skipped', value: hasTotal ? formatCount(skipped) : '—' },
-          { label: 'Pending', value: hasTotal ? formatCount(pending) : '—' },
+          { label: "Errors", value: hasTotal ? formatCount(errors) : "—" },
+          { label: "Skipped", value: hasTotal ? formatCount(skipped) : "—" },
+          { label: "Pending", value: hasTotal ? formatCount(pending) : "—" },
         ],
       },
       {
-        title: 'Context',
+        title: "Context",
         items: [
-          { label: 'Connection', value: hasScan ? connectionLabel : '—' },
-          { label: 'Date', value: hasScan ? lastDate : '—' },
+          { label: "Connection", value: hasScan ? connectionLabel : "—" },
+          { label: "Date", value: hasScan ? lastDate : "—" },
         ],
       },
-    ].map(group => ({
-      ...group,
-      items: group.items.filter(item => item.value !== '—'),
-    })).filter(group => group.items.length > 0);
+    ]
+      .map((group) => ({
+        ...group,
+        items: group.items.filter((item) => item.value !== "—"),
+      }))
+      .filter((group) => group.items.length > 0);
 
     return { subtitle, kpis, groups };
   }, [latestRelevantScan]);
@@ -345,14 +371,20 @@ export default function Dashboard({
     const results = latestScanDetails?.results || [];
     const failed = results.filter((r) => (r?.status || "").toLowerCase() === "failed");
     const errors = results.filter((r) => (r?.status || "").toLowerCase() === "error");
+
     const byControlId = (a: ApiScanResultItem, b: ApiScanResultItem) =>
       String(a?.control_id || "").localeCompare(String(b?.control_id || ""), undefined, {
         numeric: true,
       });
+
     return {
       failedCount: failed.length,
       errorCount: errors.length,
-      topItems: failed.slice().sort(byControlId).slice(0, 6).concat(errors.slice().sort(byControlId).slice(0, 2)),
+      topItems: failed
+        .slice()
+        .sort(byControlId)
+        .slice(0, 6)
+        .concat(errors.slice().sort(byControlId).slice(0, 2)),
     };
   }, [latestScanDetails]);
 
@@ -361,17 +393,76 @@ export default function Dashboard({
   }, [filteredScans]);
 
   function statusTone(status: unknown) {
-    switch (String(status || '').toLowerCase()) {
-      case 'completed':
-        return 'success';
-      case 'failed':
-        return 'error';
-      case 'running':
-        return 'running';
+    switch (String(status || "").toLowerCase()) {
+      case "completed":
+        return "success";
+      case "failed":
+        return "error";
+      case "running":
+        return "running";
       default:
-        return 'pending';
+        return "pending";
     }
   }
+
+  function summaryChipClasses(tone: string) {
+    const base =
+      "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[13px] font-semibold leading-none whitespace-nowrap";
+    switch (tone) {
+      case "good":
+        return `${base} border-emerald-500/30 bg-emerald-500/10 text-emerald-400`;
+      case "warn":
+        return `${base} border-orange-500/30 bg-orange-500/10 text-orange-400`;
+      case "bad":
+        return `${base} border-red-500/30 bg-red-500/10 text-red-400`;
+      default:
+        return isDarkMode
+          ? `${base} border-slate-700/60 bg-white/5 text-white`
+          : `${base} border-slate-200 bg-slate-100 text-slate-900`;
+    }
+  }
+
+  function statusPillClasses(status: unknown) {
+    const base =
+      "inline-flex items-center justify-center rounded-full border px-2.5 py-1 text-[11px] font-bold tracking-[0.3px]";
+    switch (statusTone(status)) {
+      case "success":
+        return `${base} border-emerald-500/35 bg-emerald-500/10 text-emerald-400`;
+      case "error":
+        return `${base} border-red-500/35 bg-red-500/10 text-red-400`;
+      case "running":
+        return `${base} border-blue-500/35 bg-blue-500/10 text-blue-300`;
+      default:
+        return `${base} border-orange-500/35 bg-orange-500/10 text-orange-400`;
+    }
+  }
+
+  function resultPillClasses(tone: "good" | "bad" | "warn") {
+    const base =
+      "inline-flex items-center rounded-full border px-2 py-0.5 text-xs";
+    if (tone === "good") {
+      return `${base} border-emerald-500/35 bg-emerald-500/10 text-emerald-400`;
+    }
+    if (tone === "bad") {
+      return `${base} border-red-500/35 bg-red-500/10 text-red-400`;
+    }
+    return `${base} border-orange-500/35 bg-orange-500/10 text-orange-400`;
+  }
+
+  const pageBg = isDarkMode
+    ? "bg-[radial-gradient(1200px_650px_at_280px_0px,rgba(59,130,246,0.22),transparent_60%),radial-gradient(900px_540px_at_calc(100%-260px)_80px,rgba(16,185,129,0.14),transparent_65%),#0a1628] text-white"
+    : "bg-slate-50 text-slate-900";
+
+  const panelBase = isDarkMode
+    ? "border border-slate-700/40 bg-white/5"
+    : "border border-slate-200 bg-white";
+
+  const subtlePanel = isDarkMode ? "bg-white/5" : "bg-slate-100";
+  const mutedPanel = isDarkMode ? "border-slate-700/40 bg-white/5" : "border-slate-200 bg-slate-100";
+  const textPrimary = isDarkMode ? "text-white" : "text-slate-900";
+  const textSecondary = isDarkMode ? "text-slate-300" : "text-slate-600";
+  const textTertiary = isDarkMode ? "text-slate-400" : "text-slate-500";
+  const hoverRow = isDarkMode ? "hover:bg-white/[0.02]" : "hover:bg-slate-50";
 
   const handleRunNewScan = () => {
     const preselect = {
@@ -379,7 +470,7 @@ export default function Dashboard({
         selectedConnectionId !== "all" ? Number(selectedConnectionId) : undefined,
       benchmark_key: selectedBenchmarkKey !== "all" ? selectedBenchmarkKey : undefined,
     };
-    navigate('/scans', { state: { openNewScan: true, preselect } });
+    navigate("/scans", { state: { openNewScan: true, preselect } });
   };
 
   const handleExportReport = () => {
@@ -392,58 +483,82 @@ export default function Dashboard({
   };
 
   return (
-    <div className={`dashboard ${isDarkMode ? 'dark' : 'light'}`} style={{ 
-      marginLeft: `${sidebarWidth}px`, 
-      width: `calc(100% - ${sidebarWidth}px)`,
-      transition: 'margin-left 0.4s ease, width 0.4s ease'
-    }}>
-      <div className="dashboard-container">
-        <div className="dashboard-header">
-          <div className="header-content">
-            <div className="logo-container">
+    <div
+      className={`${pageBg} min-h-screen p-4 transition-colors duration-300 md:p-6`}
+      style={{
+        marginLeft: `${sidebarWidth}px`,
+        width: `calc(100% - ${sidebarWidth}px)`,
+        transition: "margin-left 0.4s ease, width 0.4s ease",
+      }}
+    >
+      <div className="mx-auto flex max-w-[1320px] flex-col gap-6">
+        <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+          <div className="flex items-center gap-4">
+            <div
+              className={`flex h-14 w-14 items-center justify-center rounded-[14px] ${
+                isDarkMode ? "border border-slate-700/40 bg-white/5" : "border border-slate-200 bg-white"
+              }`}
+            >
               <picture>
                 <source srcSet="/AutoAudit.webp" type="image/webp" />
-                <img 
-                  src="/AutoAudit.png" 
-                  alt="AutoAudit Logo" 
-                  className="logo-image"
+                <img
+                  src="/AutoAudit.png"
+                  alt="AutoAudit Logo"
+                  className="h-14 w-14 rounded-xl object-contain"
                   loading="lazy"
                   width="56"
                   height="56"
                 />
               </picture>
             </div>
-            <div className="header-text">
-              <h1>AutoAudit</h1>
-              <p>Microsoft 365 Compliance Platform</p>
+
+            <div>
+              <h1 className={`m-0 text-2xl font-bold ${textPrimary}`}>AutoAudit</h1>
+              <p className={`m-0 text-sm ${textSecondary}`}>
+                Microsoft 365 Compliance Platform
+              </p>
             </div>
           </div>
-          
-          <div className="theme-toggle" role="group" aria-label="Theme toggle">
-            <Sun size={18} className={`theme-label ${!isDarkMode ? 'active' : ''}`} />
-            <label className="toggle-switch">
-              <input 
-                type="checkbox" 
-                checked={isDarkMode} 
+
+          <div
+            className="flex items-center gap-3 self-end sm:self-auto"
+            role="group"
+            aria-label="Theme toggle"
+          >
+            <Sun size={18} className={!isDarkMode ? "text-amber-500" : textTertiary} />
+
+            <label className="relative inline-block h-[26px] w-[50px]">
+              <input
+                type="checkbox"
+                checked={isDarkMode}
                 onChange={onThemeToggle}
                 aria-label="Toggle theme"
+                className="peer sr-only"
               />
-              <span className="slider"></span>
+              <span
+                className={`absolute inset-0 cursor-pointer rounded-full transition-colors duration-300 ${
+                  isDarkMode ? "bg-blue-500" : "bg-slate-300"
+                } after:absolute after:bottom-[3px] after:left-[3px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-transform after:duration-300 after:content-[''] peer-checked:after:translate-x-6`}
+              />
             </label>
-            <Moon size={18} className={`theme-label ${isDarkMode ? 'active' : ''}`} />
+
+            <Moon size={18} className={isDarkMode ? "text-blue-300" : textTertiary} />
           </div>
         </div>
 
-        <div className="top-toolbar">
-          <div className="toolbar-left">
-            <span className="toolbar-label">Connection</span>
+        <div
+          className={`relative z-50 grid gap-4 overflow-visible rounded-xl p-4 md:grid-cols-[minmax(0,1fr)_auto] md:px-6 ${panelBase}`}
+        >
+          <div className="flex min-w-0 flex-1 flex-wrap items-center gap-3 overflow-visible">
+            <span className={`text-sm font-medium ${textPrimary}`}>Connection</span>
             <Dropdown
               value={selectedConnectionId}
               onChange={setSelectedConnectionId}
               options={connectionOptions}
               isDarkMode={isDarkMode}
             />
-            <span className="toolbar-label">Benchmark</span>
+
+            <span className={`text-sm font-medium ${textPrimary}`}>Benchmark</span>
             <Dropdown
               value={selectedBenchmarkKey}
               onChange={setSelectedBenchmarkKey}
@@ -451,45 +566,72 @@ export default function Dashboard({
               isDarkMode={isDarkMode}
             />
           </div>
-          
-          <div className="toolbar-right">
-            <button className="toolbar-button secondary" onClick={handleExportReport} disabled={!latestRelevantScan?.id}>
+
+          <div className="flex flex-wrap items-center justify-end gap-3 max-sm:w-full max-sm:flex-col">
+            <button
+              className={`rounded-lg border px-4 py-2 text-sm font-medium transition hover:-translate-y-[1px] ${
+                isDarkMode
+                  ? "border-slate-700/40 bg-white/5 text-white hover:bg-slate-700/40"
+                  : "border-slate-200 bg-slate-100 text-slate-900 hover:bg-slate-200"
+              }`}
+              onClick={handleExportReport}
+              disabled={!latestRelevantScan?.id}
+            >
               Export Report
             </button>
-            <button className="toolbar-button secondary" onClick={handleEvidenceScanner}>
+
+            <button
+              className={`rounded-lg border px-4 py-2 text-sm font-medium transition hover:-translate-y-[1px] ${
+                isDarkMode
+                  ? "border-slate-700/40 bg-white/5 text-white hover:bg-slate-700/40"
+                  : "border-slate-200 bg-slate-100 text-slate-900 hover:bg-slate-200"
+              }`}
+              onClick={handleEvidenceScanner}
+            >
               Evidence Scanner
             </button>
-            <button className="toolbar-button primary" onClick={handleRunNewScan}>
+
+            <button
+              className="rounded-lg border border-blue-500/35 bg-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(59,130,246,0.22)] transition hover:-translate-y-[1px] hover:brightness-105 hover:shadow-[0_12px_30px_rgba(59,130,246,0.35)]"
+              onClick={handleRunNewScan}
+            >
               Run New Scan
             </button>
           </div>
         </div>
 
         {isLoading && (
-          <div className="dashboard-banner">
-            <Loader2 size={18} className="spinning" />
+          <div className={`flex items-center gap-2.5 rounded-xl px-4 py-3 ${panelBase}`}>
+            <Loader2 size={18} className="animate-spin" />
             <span>Loading latest results…</span>
           </div>
         )}
 
         {error && !isLoading && (
-          <div className="dashboard-banner error">
+          <div
+            className={`flex items-center gap-2.5 rounded-xl border-l-4 px-4 py-3 ${
+              isDarkMode
+                ? "border border-slate-700/40 border-l-red-500 bg-white/5 text-white"
+                : "border border-slate-200 border-l-red-500 bg-white text-slate-900"
+            }`}
+          >
             <AlertCircle size={18} />
             <span>{error}</span>
           </div>
         )}
 
-        <div className="summary-card">
-          <div className="summary-header">
-            <div className="summary-title">
-              <h3>Scan Snapshot</h3>
-              <p>{summary.subtitle}</p>
+        <div className={`flex flex-col gap-3 rounded-2xl p-[18px] md:p-[22px] ${panelBase}`}>
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <h3 className={`m-0 text-lg font-bold ${textPrimary}`}>Scan Snapshot</h3>
+              <p className={`mt-1 text-[13px] ${textSecondary}`}>{summary.subtitle}</p>
             </div>
-            <div className="summary-kpis">
+
+            <div className="flex flex-wrap items-center gap-2">
               {summary.kpis.map((kpi) => {
                 const Icon = kpi.icon;
                 return (
-                  <span key={kpi.label} className={`summary-chip ${kpi.tone}`}>
+                  <span key={kpi.label} className={summaryChipClasses(kpi.tone)}>
                     <Icon size={14} strokeWidth={2} aria-hidden="true" />
                     {kpi.label}
                   </span>
@@ -497,16 +639,36 @@ export default function Dashboard({
               })}
             </div>
           </div>
+
           {summary.groups.length > 0 && (
-            <div className="summary-groups">
-              {summary.groups.map(group => (
-                <div className="summary-group" key={group.title}>
-                  <div className="summary-group-title">{group.title}</div>
-                  <div className="summary-group-list">
-                    {group.items.map(item => (
-                      <div className="summary-row" key={item.label}>
-                        <span className="summary-row-label">{item.label}</span>
-                        <span className="summary-row-value">{item.value}</span>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {summary.groups.map((group) => (
+                <div
+                  key={group.title}
+                  className={`grid gap-2 rounded-xl border p-3 ${
+                    isDarkMode
+                      ? "border-slate-700/40 bg-white/5"
+                      : "border-slate-200 bg-slate-100"
+                  }`}
+                >
+                  <div className={`text-[11px] font-bold uppercase tracking-[0.6px] ${textTertiary}`}>
+                    {group.title}
+                  </div>
+
+                  <div className="grid gap-1.5">
+                    {group.items.map((item) => (
+                      <div
+                        key={item.label}
+                        className="flex items-center justify-between gap-2.5 text-[13px]"
+                      >
+                        <span className={`whitespace-nowrap font-medium ${textSecondary}`}>
+                          {item.label}
+                        </span>
+                        <span
+                          className={`max-w-[180px] overflow-hidden text-ellipsis whitespace-nowrap text-right font-semibold ${textPrimary}`}
+                        >
+                          {item.value}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -516,22 +678,32 @@ export default function Dashboard({
           )}
         </div>
 
-        <div className="main-grid">
-          <div className="left-stack">
-            <div className="compliance-graph-card">
-              <div className="issue-header">
-                <div className="issue-title">
-                  <span className="issue-icon">▷</span>
-                  <h4>Scan Results</h4>
+        <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+          <div className="flex min-w-0 flex-col gap-6">
+            <div className={`relative flex flex-col gap-4 rounded-xl p-6 ${panelBase}`}>
+              <div className="relative z-[5] flex items-center justify-between">
+                <div className="flex min-w-0 flex-1 items-center gap-3">
+                  <span
+                    className={`inline-flex h-6 w-6 items-center justify-center rounded-md ${
+                      isDarkMode
+                        ? "bg-slate-500/20 text-slate-400"
+                        : "bg-slate-200 text-slate-600"
+                    }`}
+                  >
+                    ▷
+                  </span>
+                  <h4 className={`m-0 text-sm font-medium ${textPrimary}`}>Scan Results</h4>
                 </div>
-              <Dropdown
-                value={selectedChartType}
-                onChange={(value) => setSelectedChartType(value as ChartType)}
-                options={chartTypeOptions}
-                isDarkMode={isDarkMode}
-              />
+
+                <Dropdown
+                  value={selectedChartType}
+                  onChange={(value) => setSelectedChartType(value as ChartType)}
+                  options={chartTypeOptions}
+                  isDarkMode={isDarkMode}
+                />
               </div>
-              <div className="chart-surface">
+
+              <div className="relative z-[1] h-[clamp(300px,34vh,380px)] min-h-[300px] w-full overflow-hidden">
                 <ComplianceChart
                   isDarkMode={isDarkMode}
                   sidebarWidth={sidebarWidth}
@@ -539,124 +711,271 @@ export default function Dashboard({
               </div>
             </div>
 
-            <div className="dashboard-panel">
-              <div className="panel-header">
-                <div className="panel-title">
-                  <h3>Recent Scans</h3>
-                  <p>Latest activity for your selected connection/benchmark</p>
+            <div className={`rounded-xl p-[18px] ${panelBase}`}>
+              <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <h3 className={`m-0 text-base font-bold ${textPrimary}`}>Recent Scans</h3>
+                  <p className={`mt-1 text-xs ${textSecondary}`}>
+                    Latest activity for your selected connection/benchmark
+                  </p>
                 </div>
-                <button className="toolbar-button secondary" onClick={() => navigate('/scans')}>
+
+                <button
+                  className={`rounded-lg border px-4 py-2 text-sm font-medium transition hover:-translate-y-[1px] ${
+                    isDarkMode
+                      ? "border-slate-700/40 bg-white/5 text-white hover:bg-slate-700/40"
+                      : "border-slate-200 bg-slate-100 text-slate-900 hover:bg-slate-200"
+                  }`}
+                  onClick={() => navigate("/scans")}
+                >
                   Open Scans
                 </button>
               </div>
 
               {recentScans.length === 0 ? (
-                <div className="panel-empty">
-                  <p>No scans found for the current filters.</p>
-                  <button className="toolbar-button primary" onClick={handleRunNewScan}>
+                <div
+                  className={`flex flex-col items-start justify-between gap-3 rounded-[10px] border px-3 py-[14px] sm:flex-row sm:items-center ${
+                    isDarkMode
+                      ? "border-slate-700/40 bg-white/5"
+                      : "border-slate-200 bg-slate-100"
+                  }`}
+                >
+                  <p className={`m-0 text-[13px] ${textSecondary}`}>
+                    No scans found for the current filters.
+                  </p>
+
+                  <button
+                    className="rounded-lg border border-blue-500/35 bg-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(59,130,246,0.22)] transition hover:-translate-y-[1px] hover:brightness-105"
+                    onClick={handleRunNewScan}
+                  >
                     Run a Scan
                   </button>
                 </div>
               ) : (
-                <div className="dashboard-table-wrap">
-                  <table className="dashboard-table">
-                    <thead>
-                      <tr>
-                        <th>Status</th>
-                        <th>Started</th>
-                        <th>Results</th>
-                        <th className="right">Open</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {recentScans.map(s => {
-                        const dt = formatDateTimePartsAEST(s.started_at || s.finished_at);
-                        const passed = Number(s.passed_count || 0);
-                        const failed = Number(s.failed_count || 0);
-                        const errors = Number(s.error_count || 0);
-                        return (
-                          <tr key={s.id}>
-                            <td>
-                              <span className={`status-pill ${statusTone(s.status)}`}>
-                                {String(s.status || 'pending').toUpperCase()}
-                              </span>
-                            </td>
-                            <td>
-                              <div className="dt">
-                                <div className="date">{dt.date}</div>
-                                <div className="time">{dt.time}</div>
-                              </div>
-                            </td>
-                            <td>
-                              <div className="result-pills">
-                                <span className="pill good">{passed} pass</span>
-                                <span className="pill bad">{failed} fail</span>
-                                {errors > 0 && <span className="pill warn">{errors} err</span>}
-                              </div>
-                            </td>
-                            <td className="right">
-                              <button className="link-button" onClick={() => navigate(`/scans/${s.id}`)} type="button">
-                                View
-                              </button>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                <div
+                  className={`overflow-hidden rounded-[10px] border ${
+                    isDarkMode ? "border-slate-700/40" : "border-slate-200"
+                  }`}
+                >
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className={subtlePanel}>
+                          <th
+                            className={`border-b px-[14px] py-3 text-left text-xs font-bold ${
+                              isDarkMode
+                                ? "border-slate-700/40 text-slate-300"
+                                : "border-slate-200 text-slate-600"
+                            }`}
+                          >
+                            Status
+                          </th>
+                          <th
+                            className={`border-b px-[14px] py-3 text-left text-xs font-bold ${
+                              isDarkMode
+                                ? "border-slate-700/40 text-slate-300"
+                                : "border-slate-200 text-slate-600"
+                            }`}
+                          >
+                            Started
+                          </th>
+                          <th
+                            className={`border-b px-[14px] py-3 text-left text-xs font-bold ${
+                              isDarkMode
+                                ? "border-slate-700/40 text-slate-300"
+                                : "border-slate-200 text-slate-600"
+                            }`}
+                          >
+                            Results
+                          </th>
+                          <th
+                            className={`border-b px-[14px] py-3 text-right text-xs font-bold ${
+                              isDarkMode
+                                ? "border-slate-700/40 text-slate-300"
+                                : "border-slate-200 text-slate-600"
+                            }`}
+                          >
+                            Open
+                          </th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        {recentScans.map((s) => {
+                          const dt = formatDateTimePartsAEST(s.started_at || s.finished_at);
+                          const passed = Number(s.passed_count || 0);
+                          const failed = Number(s.failed_count || 0);
+                          const errors = Number(s.error_count || 0);
+
+                          return (
+                            <tr key={s.id} className={hoverRow}>
+                              <td
+                                className={`border-b px-[14px] py-3 text-[13px] ${
+                                  isDarkMode
+                                    ? "border-slate-700/40 text-white"
+                                    : "border-slate-200 text-slate-900"
+                                }`}
+                              >
+                                <span className={statusPillClasses(s.status)}>
+                                  {String(s.status || "pending").toUpperCase()}
+                                </span>
+                              </td>
+
+                              <td
+                                className={`border-b px-[14px] py-3 text-[13px] ${
+                                  isDarkMode
+                                    ? "border-slate-700/40 text-white"
+                                    : "border-slate-200 text-slate-900"
+                                }`}
+                              >
+                                <div className="flex flex-col gap-0.5 leading-[1.2]">
+                                  <div className="text-xs font-bold">{dt.date}</div>
+                                  <div className={`text-xs ${textTertiary}`}>{dt.time}</div>
+                                </div>
+                              </td>
+
+                              <td
+                                className={`border-b px-[14px] py-3 text-[13px] ${
+                                  isDarkMode
+                                    ? "border-slate-700/40 text-white"
+                                    : "border-slate-200 text-slate-900"
+                                }`}
+                              >
+                                <div className="flex flex-wrap gap-2">
+                                  <span className={resultPillClasses("good")}>{passed} pass</span>
+                                  <span className={resultPillClasses("bad")}>{failed} fail</span>
+                                  {errors > 0 && (
+                                    <span className={resultPillClasses("warn")}>{errors} err</span>
+                                  )}
+                                </div>
+                              </td>
+
+                              <td
+                                className={`border-b px-[14px] py-3 text-right text-[13px] ${
+                                  isDarkMode
+                                    ? "border-slate-700/40 text-white"
+                                    : "border-slate-200 text-slate-900"
+                                }`}
+                              >
+                                <button
+                                  className={`rounded-lg border px-2.5 py-1.5 font-semibold transition ${
+                                    isDarkMode
+                                      ? "border-slate-700/40 bg-transparent text-white hover:border-blue-500/45 hover:bg-blue-500/10"
+                                      : "border-slate-200 bg-transparent text-slate-900 hover:border-blue-300 hover:bg-blue-50"
+                                  }`}
+                                  onClick={() => navigate(`/scans/${s.id}`)}
+                                  type="button"
+                                >
+                                  View
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="issues-section">
-            <div className="issue-card muted">
-              <div className="issue-header">
-                <div className="issue-title">
-                  <span className="issue-icon" aria-hidden="true">
+          <div className="flex flex-col gap-6">
+            <div
+              className={`rounded-xl border-l-4 p-6 ${
+                isDarkMode
+                  ? "border border-slate-700/40 border-l-blue-500/40 bg-white/5"
+                  : "border border-slate-200 border-l-blue-400 bg-white"
+              }`}
+            >
+              <div className="mb-[14px] flex min-w-0 items-center justify-between">
+                <div className="flex min-w-0 flex-1 items-center gap-3">
+                  <span
+                    className={`inline-flex h-6 w-6 items-center justify-center rounded-full ${
+                      isDarkMode
+                        ? "bg-slate-400/15 text-slate-300"
+                        : "bg-slate-200 text-slate-600"
+                    }`}
+                    aria-hidden="true"
+                  >
                     <AlertTriangle size={16} strokeWidth={2.2} />
                   </span>
-                  <h4>What you should change next</h4>
+
+                  <h4 className={`m-0 text-sm font-medium ${textPrimary}`}>
+                    What you should change next
+                  </h4>
                 </div>
-                <span className="issue-count">
-                  {latestRelevantScan ? Number(latestRelevantScan.failed_count || 0) + Number(latestRelevantScan.error_count || 0) : '—'}
+
+                <span className="text-2xl font-bold text-slate-400">
+                  {latestRelevantScan
+                    ? Number(latestRelevantScan.failed_count || 0) +
+                      Number(latestRelevantScan.error_count || 0)
+                    : "—"}
                 </span>
               </div>
-              <p className="issue-desc">Top failing controls from the latest scan</p>
+
+              <p className={`m-0 text-xs leading-[1.4] ${textSecondary}`}>
+                Top failing controls from the latest scan
+              </p>
+
               {scanDetailsError ? (
-                <div className="fix-empty">
-                  <p>{scanDetailsError}</p>
+                <div className={`mt-3 rounded-[10px] border p-3 ${mutedPanel}`}>
+                  <p className={`m-0 text-[13px] leading-[1.4] ${textSecondary}`}>
+                    {scanDetailsError}
+                  </p>
                 </div>
               ) : !latestRelevantScan?.id ? (
-                <div className="fix-empty">
-                  <p>No scan selected.</p>
+                <div className={`mt-3 rounded-[10px] border p-3 ${mutedPanel}`}>
+                  <p className={`m-0 text-[13px] leading-[1.4] ${textSecondary}`}>
+                    No scan selected.
+                  </p>
                 </div>
               ) : !latestScanDetails ? (
-                <div className="fix-empty">
-                  <p>Loading control results…</p>
+                <div className={`mt-3 rounded-[10px] border p-3 ${mutedPanel}`}>
+                  <p className={`m-0 text-[13px] leading-[1.4] ${textSecondary}`}>
+                    Loading control results…
+                  </p>
                 </div>
               ) : nextFixes.topItems.length === 0 ? (
-                <div className="fix-empty">
-                  <p>No failed/error controls in this scan.</p>
+                <div className={`mt-3 rounded-[10px] border p-3 ${mutedPanel}`}>
+                  <p className={`m-0 text-[13px] leading-[1.4] ${textSecondary}`}>
+                    No failed/error controls in this scan.
+                  </p>
                 </div>
               ) : (
-                <div className="fix-list">
+                <div className="mt-3 flex flex-col gap-2.5">
                   {nextFixes.topItems.map((r, idx) => (
                     <button
                       key={`${r.control_id || idx}`}
-                      className="fix-item"
-                      onClick={() => latestRelevantScan?.id && navigate(`/scans/${latestRelevantScan.id}`)}
+                      className={`grid w-full grid-cols-[72px_minmax(0,1fr)] items-start gap-2.5 rounded-xl border px-3 py-2.5 text-left transition ${
+                        isDarkMode
+                          ? "border-slate-700/40 bg-white/5 text-white hover:border-blue-500/45 hover:bg-blue-500/10"
+                          : "border-slate-200 bg-slate-100 text-slate-900 hover:border-blue-300 hover:bg-blue-50"
+                      }`}
+                      onClick={() =>
+                        latestRelevantScan?.id && navigate(`/scans/${latestRelevantScan.id}`)
+                      }
                       type="button"
                     >
-                      <span className="fix-id">{r.control_id || '—'}</span>
-                      <span className="fix-msg">{r.message || 'No message provided'}</span>
+                      <span className="text-xs font-extrabold tabular-nums text-blue-300">
+                        {r.control_id || "—"}
+                      </span>
+
+                      <span
+                        className={`overflow-hidden text-xs leading-[1.35] ${textSecondary}`}
+                        style={{
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                        }}
+                      >
+                        {r.message || "No message provided"}
+                      </span>
                     </button>
                   ))}
                 </div>
               )}
             </div>
-
-          
           </div>
         </div>
       </div>
