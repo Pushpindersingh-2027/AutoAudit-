@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AlertCircle, Loader2 } from "lucide-react";
 
-import "../Landing/LandingPage.css";
-
 import LoginHeader from "./components/LoginHeader";
 import BrandPanel from "./components/BrandPanel";
 import LandingFooter from "../Landing/components/LandingFooter";
@@ -147,11 +145,11 @@ const GoogleCallbackPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#081b2e]">
+    <div className="flex min-h-screen flex-col bg-[#081b2e]">
       <LoginHeader />
       <main className="flex flex-1 items-center justify-center px-6 py-12">
         <div className="grid w-full max-w-6xl gap-10 lg:grid-cols-2">
-          <div className="hidden lg:flex items-center justify-center">
+          <div className="hidden items-center justify-center lg:flex">
             <BrandPanel />
           </div>
 
@@ -166,7 +164,7 @@ const GoogleCallbackPage = () => {
                     </p>
                   </div>
 
-                  <div className="mt-6 mb-4 flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-3 text-red-400">
+                  <div className="mb-4 mt-6 flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-3 text-red-400">
                     <AlertCircle size={18} />
                     <span>{error}</span>
                   </div>
