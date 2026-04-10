@@ -365,10 +365,10 @@ const ConnectionsPage: React.FC<ConnectionsPageProps> = ({
         transition: "margin-left 0.4s ease, width 0.4s ease",
       }}
     >
-      <div className="mx-auto max-w-5xl">
-        <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="flex items-center gap-4">
-            <Link2 size={24} className="text-blue-400" />
+      <div className="mx-auto w-full max-w-7xl">
+        <div className="mb-6 flex items-start justify-between gap-4">
+          <div className="flex items-start gap-4">
+            <Link2 size={24} className="mt-1 text-blue-400" />
             <div>
               <h1 className={`text-2xl font-bold ${pageTheme.strong}`}>
                 Cloud Platforms
@@ -665,7 +665,7 @@ const ConnectionsPage: React.FC<ConnectionsPageProps> = ({
             <div
               className={`rounded-xl border border-dashed px-5 py-16 text-center ${pageTheme.empty}`}
             >
-              <Link2 size={48} className={`mx-auto mb-4 ${pageTheme.muted}`} />
+              <Link2 size={48} className={`mt-1 ${pageTheme.muted}`} />
               <h3 className={`mb-2 text-lg font-semibold ${pageTheme.strong}`}>
                 No connections yet
               </h3>
