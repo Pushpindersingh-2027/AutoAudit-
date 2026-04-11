@@ -407,62 +407,74 @@ export default function Dashboard({
 
   function summaryChipClasses(tone: string) {
     const base =
-      "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[13px] font-semibold leading-none whitespace-nowrap";
+      "inline-flex items-center gap-[6px] whitespace-nowrap rounded-full border px-[10px] py-[6px] text-[13px] font-semibold leading-none";
     switch (tone) {
       case "good":
-        return `${base} border-emerald-500/30 bg-emerald-500/10 text-emerald-400`;
+        return `${base} border-[rgba(16,185,129,0.3)] bg-[rgba(16,185,129,0.12)] text-[#10b981]`;
       case "warn":
-        return `${base} border-orange-500/30 bg-orange-500/10 text-orange-400`;
+        return `${base} border-[rgba(249,115,22,0.3)] bg-[rgba(249,115,22,0.12)] text-[#f97316]`;
       case "bad":
-        return `${base} border-red-500/30 bg-red-500/10 text-red-400`;
+        return `${base} border-[rgba(239,68,68,0.3)] bg-[rgba(239,68,68,0.12)] text-[#ef4444]`;
       default:
         return isDarkMode
-          ? `${base} border-slate-700/60 bg-white/5 text-white`
-          : `${base} border-slate-200 bg-slate-100 text-slate-900`;
+          ? `${base} border-[rgba(59,130,246,0.16)] bg-[rgba(30,41,59,0.78)] text-white`
+          : `${base} border-[#e2e8f0] bg-[#e2e8f0] text-[#1e293b]`;
     }
   }
 
   function statusPillClasses(status: unknown) {
     const base =
-      "inline-flex items-center justify-center rounded-full border px-2.5 py-1 text-[11px] font-bold tracking-[0.3px]";
+      "inline-flex items-center justify-center rounded-full border px-[10px] py-[4px] text-[11px] font-bold tracking-[0.3px]";
     switch (statusTone(status)) {
       case "success":
-        return `${base} border-emerald-500/35 bg-emerald-500/10 text-emerald-400`;
+        return `${base} border-[rgba(16,185,129,0.35)] bg-[rgba(16,185,129,0.12)] text-[#10b981]`;
       case "error":
-        return `${base} border-red-500/35 bg-red-500/10 text-red-400`;
+        return `${base} border-[rgba(239,68,68,0.35)] bg-[rgba(239,68,68,0.12)] text-[#ef4444]`;
       case "running":
-        return `${base} border-blue-500/35 bg-blue-500/10 text-blue-300`;
+        return `${base} border-[rgba(59,130,246,0.35)] bg-[rgba(59,130,246,0.12)] text-[#93c5fd]`;
       default:
-        return `${base} border-orange-500/35 bg-orange-500/10 text-orange-400`;
+        return `${base} border-[rgba(249,115,22,0.35)] bg-[rgba(249,115,22,0.12)] text-[#f97316]`;
     }
   }
 
   function resultPillClasses(tone: "good" | "bad" | "warn") {
     const base =
-      "inline-flex items-center rounded-full border px-2 py-0.5 text-xs";
+      "inline-flex items-center rounded-full border px-[8px] py-[3px] text-[12px]";
     if (tone === "good") {
-      return `${base} border-emerald-500/35 bg-emerald-500/10 text-emerald-400`;
+      return `${base} border-[rgba(16,185,129,0.35)] bg-[rgba(16,185,129,0.10)] text-[#10b981]`;
     }
     if (tone === "bad") {
-      return `${base} border-red-500/35 bg-red-500/10 text-red-400`;
+      return `${base} border-[rgba(239,68,68,0.35)] bg-[rgba(239,68,68,0.10)] text-[#ef4444]`;
     }
-    return `${base} border-orange-500/35 bg-orange-500/10 text-orange-400`;
+    return `${base} border-[rgba(249,115,22,0.35)] bg-[rgba(249,115,22,0.10)] text-[#f97316]`;
   }
 
-  const pageBg = isDarkMode
-    ? "bg-[radial-gradient(1200px_650px_at_280px_0px,rgba(59,130,246,0.22),transparent_60%),radial-gradient(900px_540px_at_calc(100%-260px)_80px,rgba(16,185,129,0.14),transparent_65%),#0a1628] text-white"
-    : "bg-slate-50 text-slate-900";
+  const pageBg = isDarkMode ? "text-white" : "bg-[#f8fafc] text-[#1e293b]";
+
 
   const panelBase = isDarkMode
-    ? "border border-slate-700/40 bg-white/5"
-    : "border border-slate-200 bg-white";
+    ? "border border-[rgba(59,130,246,0.16)] bg-[rgba(15,23,42,0.72)]"
+    : "border border-[#e2e8f0] bg-white";
 
-  const subtlePanel = isDarkMode ? "bg-white/5" : "bg-slate-100";
-  const mutedPanel = isDarkMode ? "border-slate-700/40 bg-white/5" : "border-slate-200 bg-slate-100";
-  const textPrimary = isDarkMode ? "text-white" : "text-slate-900";
-  const textSecondary = isDarkMode ? "text-slate-300" : "text-slate-600";
-  const textTertiary = isDarkMode ? "text-slate-400" : "text-slate-500";
-  const hoverRow = isDarkMode ? "hover:bg-white/[0.02]" : "hover:bg-slate-50";
+  const tertiaryPanel = isDarkMode
+    ? "bg-[rgba(30,41,59,0.78)]"
+    : "bg-[#e2e8f0]";
+
+  const mutedPanel = isDarkMode
+    ? "border-[rgba(59,130,246,0.16)] bg-[rgba(30,41,59,0.78)]"
+    : "border-[#e2e8f0] bg-[#e2e8f0]";
+
+  const textPrimary = isDarkMode ? "text-white" : "text-[#1e293b]";
+  const textSecondary = isDarkMode ? "text-[#cbd5e1]" : "text-[#64748b]";
+  const textTertiary = isDarkMode ? "text-[#94a3b8]" : "text-[#94a3b8]";
+  const hoverRow = isDarkMode ? "hover:bg-[rgba(30,41,59,0.55)]" : "hover:bg-[#f8fafc]";
+
+  const secondaryButton = isDarkMode
+    ? "border border-[rgba(59,130,246,0.16)] bg-[rgba(30,41,59,0.78)] text-white hover:bg-[rgba(51,65,85,0.9)]"
+    : "border border-[#e2e8f0] bg-[#e2e8f0] text-[#1e293b] hover:bg-[#dbe4ee]";
+
+  const primaryButton =
+    "border border-[rgba(59,130,246,0.35)] bg-[#3b82f6] text-white shadow-[0_8px_24px_rgba(59,130,246,0.22)] hover:-translate-y-[1px] hover:brightness-105 hover:border-[rgba(59,130,246,0.6)] hover:shadow-[0_12px_30px_rgba(59,130,246,0.35)]";
 
   const handleRunNewScan = () => {
     const preselect = {
@@ -484,27 +496,29 @@ export default function Dashboard({
 
   return (
     <div
-      className={`${pageBg} min-h-screen p-4 transition-colors duration-300 md:p-6`}
+      className={`${pageBg} min-h-screen px-6 py-5 transition-colors duration-300`}
       style={{
-        marginLeft: `${sidebarWidth}px`,
-        width: `calc(100% - ${sidebarWidth}px)`,
-        transition: "margin-left 0.4s ease, width 0.4s ease",
-      }}
+  marginLeft: `${sidebarWidth}px`,
+  width: `calc(100% - ${sidebarWidth}px)`,
+  transition: "margin-left 0.4s ease, width 0.4s ease",
+  background: isDarkMode
+    ? "radial-gradient(1200px 650px at 280px 0px, rgba(59, 130, 246, 0.22), transparent 60%), radial-gradient(900px 540px at calc(100% - 260px) 80px, rgba(16, 185, 129, 0.14), transparent 65%), #0a1628"
+    : undefined,
+}}
+
     >
       <div className="mx-auto flex max-w-[1320px] flex-col gap-6">
-        <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+        <div className="mb-0 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
           <div className="flex items-center gap-4">
             <div
-              className={`flex h-14 w-14 items-center justify-center rounded-[14px] ${
-                isDarkMode ? "border border-slate-700/40 bg-white/5" : "border border-slate-200 bg-white"
-              }`}
+              className={`flex h-[56px] w-[56px] items-center justify-center rounded-[14px] ${panelBase}`}
             >
               <picture>
                 <source srcSet="/AutoAudit.webp" type="image/webp" />
                 <img
                   src="/AutoAudit.png"
                   alt="AutoAudit Logo"
-                  className="h-14 w-14 rounded-xl object-contain"
+                  className="h-[56px] w-[56px] rounded-[12px] object-contain"
                   loading="lazy"
                   width="56"
                   height="56"
@@ -513,19 +527,19 @@ export default function Dashboard({
             </div>
 
             <div>
-              <h1 className={`m-0 text-2xl font-bold ${textPrimary}`}>AutoAudit</h1>
-              <p className={`m-0 text-sm ${textSecondary}`}>
+              <h1 className={`m-0 text-[24px] font-bold ${textPrimary}`}>AutoAudit</h1>
+              <p className={`m-0 text-[14px] ${textSecondary}`}>
                 Microsoft 365 Compliance Platform
               </p>
             </div>
           </div>
 
           <div
-            className="flex items-center gap-3 self-end sm:self-auto"
+            className="flex items-center gap-3 self-end md:self-auto"
             role="group"
             aria-label="Theme toggle"
           >
-            <Sun size={18} className={!isDarkMode ? "text-amber-500" : textTertiary} />
+            <Sun size={18} className={textTertiary} />
 
             <label className="relative inline-block h-[26px] w-[50px]">
               <input
@@ -536,21 +550,21 @@ export default function Dashboard({
                 className="peer sr-only"
               />
               <span
-                className={`absolute inset-0 cursor-pointer rounded-full transition-colors duration-300 ${
-                  isDarkMode ? "bg-blue-500" : "bg-slate-300"
-                } after:absolute after:bottom-[3px] after:left-[3px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-transform after:duration-300 after:content-[''] peer-checked:after:translate-x-6`}
+                className={`absolute inset-0 cursor-pointer rounded-[26px] transition duration-300 ${
+                  isDarkMode ? "bg-[#3b82f6]" : "bg-[#ccc]"
+                } after:absolute after:bottom-[3px] after:left-[3px] after:h-[20px] after:w-[20px] after:rounded-full after:bg-white after:transition after:duration-300 after:content-[''] peer-checked:after:translate-x-[24px]`}
               />
             </label>
 
-            <Moon size={18} className={isDarkMode ? "text-blue-300" : textTertiary} />
+            <Moon size={18} className={textTertiary} />
           </div>
         </div>
 
         <div
-          className={`relative z-50 grid gap-4 overflow-visible rounded-xl p-4 md:grid-cols-[minmax(0,1fr)_auto] md:px-6 ${panelBase}`}
+          className={`relative z-50 grid items-center gap-4 overflow-visible rounded-[12px] px-6 py-4 shadow-[0_0_0_1px_rgba(59,130,246,0.06)] md:grid-cols-[minmax(0,1fr)_auto] ${panelBase}`}
         >
           <div className="flex min-w-0 flex-1 flex-wrap items-center gap-3 overflow-visible">
-            <span className={`text-sm font-medium ${textPrimary}`}>Connection</span>
+            <span className={`text-[14px] font-medium ${textPrimary}`}>Connection</span>
             <Dropdown
               value={selectedConnectionId}
               onChange={setSelectedConnectionId}
@@ -558,7 +572,7 @@ export default function Dashboard({
               isDarkMode={isDarkMode}
             />
 
-            <span className={`text-sm font-medium ${textPrimary}`}>Benchmark</span>
+            <span className={`text-[14px] font-medium ${textPrimary}`}>Benchmark</span>
             <Dropdown
               value={selectedBenchmarkKey}
               onChange={setSelectedBenchmarkKey}
@@ -569,11 +583,7 @@ export default function Dashboard({
 
           <div className="flex flex-wrap items-center justify-end gap-3 max-sm:w-full max-sm:flex-col">
             <button
-              className={`rounded-lg border px-4 py-2 text-sm font-medium transition hover:-translate-y-[1px] ${
-                isDarkMode
-                  ? "border-slate-700/40 bg-white/5 text-white hover:bg-slate-700/40"
-                  : "border-slate-200 bg-slate-100 text-slate-900 hover:bg-slate-200"
-              }`}
+              className={`flex items-center gap-2 rounded-[8px] px-4 py-2 text-[14px] font-medium transition ${secondaryButton}`}
               onClick={handleExportReport}
               disabled={!latestRelevantScan?.id}
             >
@@ -581,18 +591,14 @@ export default function Dashboard({
             </button>
 
             <button
-              className={`rounded-lg border px-4 py-2 text-sm font-medium transition hover:-translate-y-[1px] ${
-                isDarkMode
-                  ? "border-slate-700/40 bg-white/5 text-white hover:bg-slate-700/40"
-                  : "border-slate-200 bg-slate-100 text-slate-900 hover:bg-slate-200"
-              }`}
+              className={`flex items-center gap-2 rounded-[8px] px-4 py-2 text-[14px] font-medium transition ${secondaryButton}`}
               onClick={handleEvidenceScanner}
             >
               Evidence Scanner
             </button>
 
             <button
-              className="rounded-lg border border-blue-500/35 bg-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(59,130,246,0.22)] transition hover:-translate-y-[1px] hover:brightness-105 hover:shadow-[0_12px_30px_rgba(59,130,246,0.35)]"
+              className={`flex items-center gap-2 rounded-[8px] px-4 py-2 text-[14px] font-semibold transition ${primaryButton}`}
               onClick={handleRunNewScan}
             >
               Run New Scan
@@ -601,7 +607,7 @@ export default function Dashboard({
         </div>
 
         {isLoading && (
-          <div className={`flex items-center gap-2.5 rounded-xl px-4 py-3 ${panelBase}`}>
+          <div className={`flex items-center gap-[10px] rounded-[12px] px-4 py-3 ${panelBase}`}>
             <Loader2 size={18} className="animate-spin" />
             <span>Loading latest results…</span>
           </div>
@@ -609,10 +615,10 @@ export default function Dashboard({
 
         {error && !isLoading && (
           <div
-            className={`flex items-center gap-2.5 rounded-xl border-l-4 px-4 py-3 ${
+            className={`flex items-center gap-[10px] rounded-[12px] border-l-4 px-4 py-3 ${
               isDarkMode
-                ? "border border-slate-700/40 border-l-red-500 bg-white/5 text-white"
-                : "border border-slate-200 border-l-red-500 bg-white text-slate-900"
+                ? "border border-[rgba(59,130,246,0.16)] border-l-[#ef4444] bg-[rgba(15,23,42,0.72)] text-white"
+                : "border border-[#e2e8f0] border-l-[#ef4444] bg-white text-[#1e293b]"
             }`}
           >
             <AlertCircle size={18} />
@@ -620,10 +626,12 @@ export default function Dashboard({
           </div>
         )}
 
-        <div className={`flex flex-col gap-3 rounded-2xl p-[18px] md:p-[22px] ${panelBase}`}>
+        <div
+          className={`flex flex-col gap-3 rounded-[16px] px-[22px] py-[18px] shadow-[0_0_0_1px_rgba(59,130,246,0.05)] ${panelBase}`}
+        >
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <h3 className={`m-0 text-lg font-bold ${textPrimary}`}>Scan Snapshot</h3>
+              <h3 className={`m-0 text-[18px] font-bold ${textPrimary}`}>Scan Snapshot</h3>
               <p className={`mt-1 text-[13px] ${textSecondary}`}>{summary.subtitle}</p>
             </div>
 
@@ -641,31 +649,29 @@ export default function Dashboard({
           </div>
 
           {summary.groups.length > 0 && (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
               {summary.groups.map((group) => (
                 <div
                   key={group.title}
-                  className={`grid gap-2 rounded-xl border p-3 ${
-                    isDarkMode
-                      ? "border-slate-700/40 bg-white/5"
-                      : "border-slate-200 bg-slate-100"
-                  }`}
+                  className={`grid gap-2 rounded-[12px] border px-3 py-[10px] ${mutedPanel}`}
                 >
-                  <div className={`text-[11px] font-bold uppercase tracking-[0.6px] ${textTertiary}`}>
+                  <div
+                    className={`text-[11px] font-bold uppercase tracking-[0.6px] ${textTertiary}`}
+                  >
                     {group.title}
                   </div>
 
-                  <div className="grid gap-1.5">
+                  <div className="grid gap-[6px]">
                     {group.items.map((item) => (
                       <div
                         key={item.label}
-                        className="flex items-center justify-between gap-2.5 text-[13px]"
+                        className="flex items-center justify-between gap-[10px] text-[13px]"
                       >
                         <span className={`whitespace-nowrap font-medium ${textSecondary}`}>
                           {item.label}
                         </span>
                         <span
-                          className={`max-w-[180px] overflow-hidden text-ellipsis whitespace-nowrap text-right font-semibold ${textPrimary}`}
+                          className={`max-w-[180px] overflow-hidden text-ellipsis whitespace-nowrap text-right font-semibold tabular-nums ${textPrimary}`}
                         >
                           {item.value}
                         </span>
@@ -680,19 +686,21 @@ export default function Dashboard({
 
         <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
           <div className="flex min-w-0 flex-col gap-6">
-            <div className={`relative flex flex-col gap-4 rounded-xl p-6 ${panelBase}`}>
+            <div
+              className={`relative flex min-h-0 flex-col gap-4 overflow-visible rounded-[12px] p-6 shadow-[0_0_0_1px_rgba(59,130,246,0.05)] ${panelBase}`}
+            >
               <div className="relative z-[5] flex items-center justify-between">
                 <div className="flex min-w-0 flex-1 items-center gap-3">
                   <span
-                    className={`inline-flex h-6 w-6 items-center justify-center rounded-md ${
+                    className={`inline-flex h-6 w-6 items-center justify-center rounded-[6px] ${
                       isDarkMode
-                        ? "bg-slate-500/20 text-slate-400"
-                        : "bg-slate-200 text-slate-600"
+                        ? "bg-[rgba(100,116,139,0.2)] text-[#94a3b8]"
+                        : "bg-[#e2e8f0] text-[#64748b]"
                     }`}
                   >
                     ▷
                   </span>
-                  <h4 className={`m-0 text-sm font-medium ${textPrimary}`}>Scan Results</h4>
+                  <h4 className={`m-0 text-[14px] font-medium ${textPrimary}`}>Scan Results</h4>
                 </div>
 
                 <Dropdown
@@ -711,21 +719,17 @@ export default function Dashboard({
               </div>
             </div>
 
-            <div className={`rounded-xl p-[18px] ${panelBase}`}>
+            <div className={`rounded-[12px] p-[18px] ${panelBase}`}>
               <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <h3 className={`m-0 text-base font-bold ${textPrimary}`}>Recent Scans</h3>
-                  <p className={`mt-1 text-xs ${textSecondary}`}>
+                  <h3 className={`m-0 text-[16px] font-bold ${textPrimary}`}>Recent Scans</h3>
+                  <p className={`mt-1 text-[12px] ${textSecondary}`}>
                     Latest activity for your selected connection/benchmark
                   </p>
                 </div>
 
                 <button
-                  className={`rounded-lg border px-4 py-2 text-sm font-medium transition hover:-translate-y-[1px] ${
-                    isDarkMode
-                      ? "border-slate-700/40 bg-white/5 text-white hover:bg-slate-700/40"
-                      : "border-slate-200 bg-slate-100 text-slate-900 hover:bg-slate-200"
-                  }`}
+                  className={`flex items-center gap-2 rounded-[8px] px-4 py-2 text-[14px] font-medium transition ${secondaryButton}`}
                   onClick={() => navigate("/scans")}
                 >
                   Open Scans
@@ -734,18 +738,14 @@ export default function Dashboard({
 
               {recentScans.length === 0 ? (
                 <div
-                  className={`flex flex-col items-start justify-between gap-3 rounded-[10px] border px-3 py-[14px] sm:flex-row sm:items-center ${
-                    isDarkMode
-                      ? "border-slate-700/40 bg-white/5"
-                      : "border-slate-200 bg-slate-100"
-                  }`}
+                  className={`flex flex-col items-start justify-between gap-3 rounded-[10px] border px-3 py-[14px] sm:flex-row sm:items-center ${mutedPanel}`}
                 >
                   <p className={`m-0 text-[13px] ${textSecondary}`}>
                     No scans found for the current filters.
                   </p>
 
                   <button
-                    className="rounded-lg border border-blue-500/35 bg-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(59,130,246,0.22)] transition hover:-translate-y-[1px] hover:brightness-105"
+                    className={`flex items-center gap-2 rounded-[8px] px-4 py-2 text-[14px] font-semibold transition ${primaryButton}`}
                     onClick={handleRunNewScan}
                   >
                     Run a Scan
@@ -754,45 +754,45 @@ export default function Dashboard({
               ) : (
                 <div
                   className={`overflow-hidden rounded-[10px] border ${
-                    isDarkMode ? "border-slate-700/40" : "border-slate-200"
+                    isDarkMode ? "border-[rgba(59,130,246,0.16)]" : "border-[#e2e8f0]"
                   }`}
                 >
                   <div className="overflow-x-auto">
                     <table className="w-full border-collapse">
                       <thead>
-                        <tr className={subtlePanel}>
+                        <tr className={tertiaryPanel}>
                           <th
-                            className={`border-b px-[14px] py-3 text-left text-xs font-bold ${
+                            className={`border-b px-[14px] py-3 text-left text-[12px] font-bold ${
                               isDarkMode
-                                ? "border-slate-700/40 text-slate-300"
-                                : "border-slate-200 text-slate-600"
+                                ? "border-[rgba(59,130,246,0.16)] text-[#cbd5e1]"
+                                : "border-[#e2e8f0] text-[#64748b]"
                             }`}
                           >
                             Status
                           </th>
                           <th
-                            className={`border-b px-[14px] py-3 text-left text-xs font-bold ${
+                            className={`border-b px-[14px] py-3 text-left text-[12px] font-bold ${
                               isDarkMode
-                                ? "border-slate-700/40 text-slate-300"
-                                : "border-slate-200 text-slate-600"
+                                ? "border-[rgba(59,130,246,0.16)] text-[#cbd5e1]"
+                                : "border-[#e2e8f0] text-[#64748b]"
                             }`}
                           >
                             Started
                           </th>
                           <th
-                            className={`border-b px-[14px] py-3 text-left text-xs font-bold ${
+                            className={`border-b px-[14px] py-3 text-left text-[12px] font-bold ${
                               isDarkMode
-                                ? "border-slate-700/40 text-slate-300"
-                                : "border-slate-200 text-slate-600"
+                                ? "border-[rgba(59,130,246,0.16)] text-[#cbd5e1]"
+                                : "border-[#e2e8f0] text-[#64748b]"
                             }`}
                           >
                             Results
                           </th>
                           <th
-                            className={`border-b px-[14px] py-3 text-right text-xs font-bold ${
+                            className={`border-b px-[14px] py-3 text-right text-[12px] font-bold ${
                               isDarkMode
-                                ? "border-slate-700/40 text-slate-300"
-                                : "border-slate-200 text-slate-600"
+                                ? "border-[rgba(59,130,246,0.16)] text-[#cbd5e1]"
+                                : "border-[#e2e8f0] text-[#64748b]"
                             }`}
                           >
                             Open
@@ -812,8 +812,8 @@ export default function Dashboard({
                               <td
                                 className={`border-b px-[14px] py-3 text-[13px] ${
                                   isDarkMode
-                                    ? "border-slate-700/40 text-white"
-                                    : "border-slate-200 text-slate-900"
+                                    ? "border-[rgba(59,130,246,0.16)] text-white"
+                                    : "border-[#e2e8f0] text-[#1e293b]"
                                 }`}
                               >
                                 <span className={statusPillClasses(s.status)}>
@@ -824,21 +824,21 @@ export default function Dashboard({
                               <td
                                 className={`border-b px-[14px] py-3 text-[13px] ${
                                   isDarkMode
-                                    ? "border-slate-700/40 text-white"
-                                    : "border-slate-200 text-slate-900"
+                                    ? "border-[rgba(59,130,246,0.16)] text-white"
+                                    : "border-[#e2e8f0] text-[#1e293b]"
                                 }`}
                               >
-                                <div className="flex flex-col gap-0.5 leading-[1.2]">
-                                  <div className="text-xs font-bold">{dt.date}</div>
-                                  <div className={`text-xs ${textTertiary}`}>{dt.time}</div>
+                                <div className="flex flex-col gap-[2px] leading-[1.2]">
+                                  <div className="text-[12px] font-bold">{dt.date}</div>
+                                  <div className={`text-[12px] ${textTertiary}`}>{dt.time}</div>
                                 </div>
                               </td>
 
                               <td
                                 className={`border-b px-[14px] py-3 text-[13px] ${
                                   isDarkMode
-                                    ? "border-slate-700/40 text-white"
-                                    : "border-slate-200 text-slate-900"
+                                    ? "border-[rgba(59,130,246,0.16)] text-white"
+                                    : "border-[#e2e8f0] text-[#1e293b]"
                                 }`}
                               >
                                 <div className="flex flex-wrap gap-2">
@@ -853,15 +853,15 @@ export default function Dashboard({
                               <td
                                 className={`border-b px-[14px] py-3 text-right text-[13px] ${
                                   isDarkMode
-                                    ? "border-slate-700/40 text-white"
-                                    : "border-slate-200 text-slate-900"
+                                    ? "border-[rgba(59,130,246,0.16)] text-white"
+                                    : "border-[#e2e8f0] text-[#1e293b]"
                                 }`}
                               >
                                 <button
-                                  className={`rounded-lg border px-2.5 py-1.5 font-semibold transition ${
+                                  className={`rounded-[8px] border px-[10px] py-[6px] font-semibold transition ${
                                     isDarkMode
-                                      ? "border-slate-700/40 bg-transparent text-white hover:border-blue-500/45 hover:bg-blue-500/10"
-                                      : "border-slate-200 bg-transparent text-slate-900 hover:border-blue-300 hover:bg-blue-50"
+                                      ? "border-[rgba(59,130,246,0.16)] bg-transparent text-white hover:border-[rgba(59,130,246,0.45)] hover:bg-[rgba(59,130,246,0.10)]"
+                                      : "border-[#e2e8f0] bg-transparent text-[#1e293b] hover:border-[#93c5fd] hover:bg-[#eff6ff]"
                                   }`}
                                   onClick={() => navigate(`/scans/${s.id}`)}
                                   type="button"
@@ -882,10 +882,10 @@ export default function Dashboard({
 
           <div className="flex flex-col gap-6">
             <div
-              className={`rounded-xl border-l-4 p-6 ${
+              className={`rounded-[12px] border-l-4 p-6 ${
                 isDarkMode
-                  ? "border border-slate-700/40 border-l-blue-500/40 bg-white/5"
-                  : "border border-slate-200 border-l-blue-400 bg-white"
+                  ? "border border-[rgba(59,130,246,0.16)] border-l-[rgba(59,130,246,0.4)] bg-[rgba(15,23,42,0.72)]"
+                  : "border border-[#e2e8f0] border-l-[rgba(59,130,246,0.4)] bg-white"
               }`}
             >
               <div className="mb-[14px] flex min-w-0 items-center justify-between">
@@ -893,20 +893,26 @@ export default function Dashboard({
                   <span
                     className={`inline-flex h-6 w-6 items-center justify-center rounded-full ${
                       isDarkMode
-                        ? "bg-slate-400/15 text-slate-300"
-                        : "bg-slate-200 text-slate-600"
+                        ? "bg-[rgba(148,163,184,0.15)] text-[rgba(148,163,184,0.95)]"
+                        : "bg-[#e2e8f0] text-[#64748b]"
                     }`}
                     aria-hidden="true"
                   >
                     <AlertTriangle size={16} strokeWidth={2.2} />
                   </span>
 
-                  <h4 className={`m-0 text-sm font-medium ${textPrimary}`}>
+                  <h4 className={`m-0 text-[14px] font-medium ${textPrimary}`}>
                     What you should change next
                   </h4>
                 </div>
 
-                <span className="text-2xl font-bold text-slate-400">
+                <span
+                  className={
+                    isDarkMode
+                      ? "text-[24px] font-bold text-[#94a3b8]"
+                      : "text-[24px] font-bold text-[#64748b]"
+                  }
+                >
                   {latestRelevantScan
                     ? Number(latestRelevantScan.failed_count || 0) +
                       Number(latestRelevantScan.error_count || 0)
@@ -914,7 +920,7 @@ export default function Dashboard({
                 </span>
               </div>
 
-              <p className={`m-0 text-xs leading-[1.4] ${textSecondary}`}>
+              <p className={`m-0 text-[12px] leading-[1.4] ${textSecondary}`}>
                 Top failing controls from the latest scan
               </p>
 
@@ -943,26 +949,26 @@ export default function Dashboard({
                   </p>
                 </div>
               ) : (
-                <div className="mt-3 flex flex-col gap-2.5">
+                <div className="mt-3 flex flex-col gap-[10px]">
                   {nextFixes.topItems.map((r, idx) => (
                     <button
                       key={`${r.control_id || idx}`}
-                      className={`grid w-full grid-cols-[72px_minmax(0,1fr)] items-start gap-2.5 rounded-xl border px-3 py-2.5 text-left transition ${
+                      className={`grid w-full grid-cols-[72px_minmax(0,1fr)] items-start gap-[10px] rounded-[12px] border px-3 py-[10px] text-left transition ${
                         isDarkMode
-                          ? "border-slate-700/40 bg-white/5 text-white hover:border-blue-500/45 hover:bg-blue-500/10"
-                          : "border-slate-200 bg-slate-100 text-slate-900 hover:border-blue-300 hover:bg-blue-50"
+                          ? "border-[rgba(59,130,246,0.16)] bg-[rgba(30,41,59,0.78)] text-white hover:border-[rgba(59,130,246,0.45)] hover:bg-[rgba(59,130,246,0.10)]"
+                          : "border-[#e2e8f0] bg-[#e2e8f0] text-[#1e293b] hover:border-[#93c5fd] hover:bg-[#eff6ff]"
                       }`}
                       onClick={() =>
                         latestRelevantScan?.id && navigate(`/scans/${latestRelevantScan.id}`)
                       }
                       type="button"
                     >
-                      <span className="text-xs font-extrabold tabular-nums text-blue-300">
+                      <span className="text-[12px] font-extrabold tabular-nums text-[rgba(147,197,253,0.95)]">
                         {r.control_id || "—"}
                       </span>
 
                       <span
-                        className={`overflow-hidden text-xs leading-[1.35] ${textSecondary}`}
+                        className={`overflow-hidden text-[12px] leading-[1.35] ${textSecondary}`}
                         style={{
                           display: "-webkit-box",
                           WebkitLineClamp: 2,
