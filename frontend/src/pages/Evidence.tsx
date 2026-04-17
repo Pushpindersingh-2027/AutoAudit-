@@ -323,7 +323,7 @@ const Evidence = ({ sidebarWidth = 220, isDarkMode = true }: EvidencePageProps) 
 
   return (
     <div
-      className={`${isDarkMode ? 'dark' : 'light'} min-h-screen p-6 bg-[rgb(var(--surface-1))] text-[rgb(var(--text-strong))] transition-colors duration-200`}
+      className={`${isDarkMode ? 'dark' : 'light'} min-h-screen p-6 bg-[#0f172a] text-[rgb(var(--text-strong))] transition-colors duration-200 [.light_&]:bg-slate-50`}
       style={{
         // Layout: keep page content aligned with collapsible sidebar width.
         marginLeft: `${sidebarWidth}px`,
@@ -331,7 +331,7 @@ const Evidence = ({ sidebarWidth = 220, isDarkMode = true }: EvidencePageProps) 
         transition: 'margin-left 0.4s ease, width 0.4s ease'
       }}
     >
-      <div className="w-full max-w-full mx-auto">
+      <div className="w-full max-w-[1200px] mx-auto">
         <div className="flex items-center gap-5 mb-1.5 justify-start pl-6">
           <div className="flex items-center gap-5">
             <img src="/AutoAudit.png" alt="AutoAudit Logo" className="w-40 h-40 object-contain" />
