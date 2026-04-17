@@ -69,7 +69,7 @@ const EvidenceExtract = ({ evidence }: { evidence: unknown }) => {
   return (
     <div className="flex flex-col gap-1.5">
       <div className="border-0 p-0 bg-transparent">
-        <pre className="m-0 whitespace-pre-wrap text-[13px] leading-snug break-words px-3 py-2.5 border border-[rgb(var(--border-subtle))] rounded-xl bg-[rgb(var(--surface-1))] max-h-40 overflow-auto" style={{ fontFamily: '"SFMono-Regular", "Menlo", "Consolas", monospace' }}>{text}</pre>
+        <pre className="m-0 whitespace-pre-wrap text-[13px] leading-snug wrap-break-word px-3 py-2.5 border border-[rgb(var(--border-subtle))] rounded-xl bg-[rgb(var(--surface-1))] max-h-40 overflow-auto" style={{ fontFamily: '"SFMono-Regular", "Menlo", "Consolas", monospace' }}>{text}</pre>
       </div>
     </div>
   );
@@ -323,7 +323,7 @@ const Evidence = ({ sidebarWidth = 220, isDarkMode = true }: EvidencePageProps) 
 
   return (
     <div
-      className={`${isDarkMode ? 'dark' : 'light'} min-h-screen p-6 bg-[#0f172a] text-[rgb(var(--text-strong))] transition-colors duration-200 [.light_&]:bg-slate-50`}
+      className={`${isDarkMode ? 'dark' : 'light'} min-h-screen p-6 bg-[#0f172a] text-[rgb(var(--text-strong))] transition-colors duration-200 in-[.light]:bg-slate-50`}
       style={{
         // Layout: keep page content aligned with collapsible sidebar width.
         marginLeft: `${sidebarWidth}px`,
@@ -331,12 +331,12 @@ const Evidence = ({ sidebarWidth = 220, isDarkMode = true }: EvidencePageProps) 
         transition: 'margin-left 0.4s ease, width 0.4s ease'
       }}
     >
-      <div className="w-full max-w-[1200px] mx-auto">
+      <div className="w-full max-w-300 mx-auto">
         <div className="flex items-center gap-5 mb-1.5 justify-start pl-6">
           <div className="flex items-center gap-5">
             <img src="/AutoAudit.png" alt="AutoAudit Logo" className="w-40 h-40 object-contain" />
             <h1
-              className="m-0 leading-none font-bold tracking-wide text-[rgb(var(--accent-teal))] [.light_&]:text-sky-500"
+              className="m-0 leading-none font-bold tracking-wide text-[rgb(var(--accent-teal))] in-[.light]:text-sky-500"
               style={{
                 fontFamily: '"League Spartan", system-ui, sans-serif',
                 fontSize: 'clamp(28px, 7vw, 56px)',
@@ -360,7 +360,7 @@ const Evidence = ({ sidebarWidth = 220, isDarkMode = true }: EvidencePageProps) 
               </label>
               <select
                 id="strategy"
-                className="w-full px-3.5 py-3 border border-[rgb(var(--border-subtle))] rounded-[10px] text-[15px] bg-[rgb(var(--surface-1))] text-[rgb(var(--text-strong))] transition-all duration-300 appearance-none pr-10 min-h-[46px] leading-snug bg-no-repeat focus:outline-none focus:border-[rgb(var(--accent-teal))] focus:ring-2 focus:ring-[rgb(var(--accent-teal))]/20 disabled:opacity-60 disabled:cursor-not-allowed [.light_&]:bg-white [.light_&]:text-slate-800"
+                className="w-full px-3.5 py-3 border border-[rgb(var(--border-subtle))] rounded-[10px] text-[15px] bg-[rgb(var(--surface-1))] text-[rgb(var(--text-strong))] transition-all duration-300 appearance-none pr-10 min-h-11.5 leading-snug bg-no-repeat focus:outline-none focus:border-[rgb(var(--accent-teal))] focus:ring-2 focus:ring-[rgb(var(--accent-teal))]/20 disabled:opacity-60 disabled:cursor-not-allowed in-[.light]:bg-white in-[.light]:text-slate-800"
                 style={{
                   backgroundImage: `url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
                   backgroundPosition: 'right 12px center',
@@ -398,7 +398,7 @@ const Evidence = ({ sidebarWidth = 220, isDarkMode = true }: EvidencePageProps) 
             <input
               id="file"
               type="file"
-              className="w-full px-3.5 py-3 border border-[rgb(var(--border-subtle))] rounded-[10px] text-[15px] bg-[rgb(var(--surface-1))] text-[rgb(var(--text-strong))] transition-all duration-300 focus:outline-none focus:border-[rgb(var(--accent-teal))] focus:ring-2 focus:ring-[rgb(var(--accent-teal))]/20 disabled:opacity-60 disabled:cursor-not-allowed [.light_&]:bg-white [.light_&]:text-slate-800"
+              className="w-full px-3.5 py-3 border border-[rgb(var(--border-subtle))] rounded-[10px] text-[15px] bg-[rgb(var(--surface-1))] text-[rgb(var(--text-strong))] transition-all duration-300 focus:outline-none focus:border-[rgb(var(--accent-teal))] focus:ring-2 focus:ring-[rgb(var(--accent-teal))]/20 disabled:opacity-60 disabled:cursor-not-allowed in-[.light]:bg-white in-[.light]:text-slate-800"
               ref={fileInputRef}
               // Require a strategy first (so we can set accept list + UX guidance).
               disabled={!selectedStrategy}
@@ -443,7 +443,7 @@ const Evidence = ({ sidebarWidth = 220, isDarkMode = true }: EvidencePageProps) 
                 {reportFiles.length > 0 && (
                   <a
                     href={getEvidenceReportUrl(reportFiles[0])}
-                    className="inline-flex items-center justify-center px-2.5 py-1.5 rounded-full border border-[rgb(var(--accent-teal))]/35 bg-[rgb(var(--accent-teal))]/[0.08] text-[rgb(var(--accent-teal))] no-underline font-bold text-xs leading-none hover:text-cyan-400 hover:bg-[rgb(var(--accent-teal))]/[0.14] hover:border-[rgb(var(--accent-teal))]/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[rgb(var(--accent-teal))]/70 focus-visible:outline-offset-2"
+                    className="inline-flex items-center justify-center px-2.5 py-1.5 rounded-full border border-[rgb(var(--accent-teal))]/35 bg-[rgb(var(--accent-teal))]/8 text-[rgb(var(--accent-teal))] no-underline font-bold text-xs leading-none hover:text-cyan-400 hover:bg-[rgb(var(--accent-teal))]/[0.14] hover:border-[rgb(var(--accent-teal))]/60 focus-visible:outline focus-visible:outline-[rgb(var(--accent-teal))]/70 focus-visible:outline-offset-2"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -468,11 +468,11 @@ const Evidence = ({ sidebarWidth = 220, isDarkMode = true }: EvidencePageProps) 
             <div className="mb-3 flex gap-4 flex-wrap">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 border border-[rgb(var(--border-subtle))] rounded-full text-xs text-[rgb(var(--text-muted))] bg-[rgb(var(--border-subtle))] min-w-0">
                 <span className="text-[rgb(var(--text-muted))] text-[11px] font-bold tracking-wider uppercase whitespace-nowrap">Strategy</span>
-                <span className="text-[rgb(var(--text-strong))] font-semibold overflow-hidden text-ellipsis whitespace-nowrap max-w-[420px]">{selectedStrategy}</span>
+                <span className="text-[rgb(var(--text-strong))] font-semibold overflow-hidden text-ellipsis whitespace-nowrap max-w-105">{selectedStrategy}</span>
               </div>
               <div className="inline-flex items-center gap-2 px-3 py-1.5 border border-[rgb(var(--border-subtle))] rounded-full text-xs text-[rgb(var(--text-muted))] bg-[rgb(var(--border-subtle))] min-w-0">
                 <span className="text-[rgb(var(--text-muted))] text-[11px] font-bold tracking-wider uppercase whitespace-nowrap">File</span>
-                <span className="text-[rgb(var(--text-strong))] font-semibold overflow-hidden text-ellipsis whitespace-nowrap max-w-[420px]">{selectedFile?.name}</span>
+                <span className="text-[rgb(var(--text-strong))] font-semibold overflow-hidden text-ellipsis whitespace-nowrap max-w-105">{selectedFile?.name}</span>
               </div>
             </div>
 
@@ -485,14 +485,14 @@ const Evidence = ({ sidebarWidth = 220, isDarkMode = true }: EvidencePageProps) 
 
             {findings.length > 0 ? (
               <div className="mt-4 border border-[rgb(var(--border-subtle))] rounded-xl overflow-x-auto overflow-y-visible bg-[rgb(var(--surface-2))]">
-                <table className="w-full border-collapse text-sm min-w-[1280px]">
+                <table className="w-full border-collapse text-sm min-w-7xl">
                   <thead>
                     <tr>
                       <th className="px-4 py-3.5 text-left align-top bg-[rgb(var(--border-subtle))] text-[rgb(var(--text-muted))] font-bold text-xs uppercase tracking-wider border-b border-[rgb(var(--border-subtle))] whitespace-nowrap">Test ID</th>
                       <th className="px-4 py-3.5 text-left align-top bg-[rgb(var(--border-subtle))] text-[rgb(var(--text-muted))] font-bold text-xs uppercase tracking-wider border-b border-[rgb(var(--border-subtle))] whitespace-nowrap">Sub-Strategy</th>
                       <th className="px-4 py-3.5 text-left align-top bg-[rgb(var(--border-subtle))] text-[rgb(var(--text-muted))] font-bold text-xs uppercase tracking-wider border-b border-[rgb(var(--border-subtle))] whitespace-nowrap">Status</th>
-                      <th className="px-4 py-3.5 text-left align-top bg-[rgb(var(--border-subtle))] text-[rgb(var(--text-muted))] font-bold text-xs uppercase tracking-wider border-b border-[rgb(var(--border-subtle))] whitespace-nowrap min-w-[320px] max-w-[520px]">Recommendation</th>
-                      <th className="px-4 py-3.5 text-left align-top bg-[rgb(var(--border-subtle))] text-[rgb(var(--text-muted))] font-bold text-xs uppercase tracking-wider border-b border-[rgb(var(--border-subtle))] whitespace-nowrap min-w-[520px]">Evidence Extract</th>
+                      <th className="px-4 py-3.5 text-left align-top bg-[rgb(var(--border-subtle))] text-[rgb(var(--text-muted))] font-bold text-xs uppercase tracking-wider border-b border-[rgb(var(--border-subtle))] whitespace-nowrap min-w-[320px] max-w-130">Recommendation</th>
+                      <th className="px-4 py-3.5 text-left align-top bg-[rgb(var(--border-subtle))] text-[rgb(var(--text-muted))] font-bold text-xs uppercase tracking-wider border-b border-[rgb(var(--border-subtle))] whitespace-nowrap min-w-130">Evidence Extract</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -514,12 +514,12 @@ const Evidence = ({ sidebarWidth = 220, isDarkMode = true }: EvidencePageProps) 
                               {finding.pass_fail || '—'}
                             </span>
                           </td>
-                          <td className={`px-4 py-3.5 text-left align-top bg-[rgb(var(--surface-2))] text-[rgb(var(--text-strong))] ${borderClass} group-hover:bg-[rgb(var(--border-subtle))] min-w-[320px] max-w-[520px] break-words`}>
-                            <div className="line-clamp-3 leading-snug break-words" title={finding.recommendation || ''}>
+                          <td className={`px-4 py-3.5 text-left align-top bg-[rgb(var(--surface-2))] text-[rgb(var(--text-strong))] ${borderClass} group-hover:bg-[rgb(var(--border-subtle))] min-w-[320px] max-w-130 wrap-break-word`}>
+                            <div className="line-clamp-3 leading-snug wrap-break-word" title={finding.recommendation || ''}>
                               {finding.recommendation || '—'}
                             </div>
                           </td>
-                          <td className={`px-4 py-3.5 text-left align-top bg-[rgb(var(--surface-2))] text-[rgb(var(--text-strong))] ${borderClass} group-hover:bg-[rgb(var(--border-subtle))] min-w-[520px]`}>
+                          <td className={`px-4 py-3.5 text-left align-top bg-[rgb(var(--surface-2))] text-[rgb(var(--text-strong))] ${borderClass} group-hover:bg-[rgb(var(--border-subtle))] min-w-130`}>
                             <EvidenceExtract evidence={finding.evidence} />
                           </td>
                         </tr>
