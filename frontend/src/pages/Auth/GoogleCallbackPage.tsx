@@ -2,9 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AlertCircle, Loader2 } from "lucide-react";
 
-import "./LoginPage.css";
-import "../Landing/LandingPage.css";
-
 import LoginHeader from "./components/LoginHeader";
 import BrandPanel from "./components/BrandPanel";
 import LandingFooter from "../Landing/components/LandingFooter";
@@ -17,7 +14,7 @@ type OAuthCallbackPayload = {
   token_type?: string | null;
   error?: string | null;
   error_description?: string | null;
-}
+};
 
 function safeJsonParse(value: string | null): unknown {
   if (!value) return null;
@@ -144,69 +141,51 @@ const GoogleCallbackPage = () => {
     return () => {
       cancelled = true;
     };
-    // Intentionally run once on mount — see comment in original implementation.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <div className="login-page">
+    <div className="flex min-h-screen flex-col bg-[#081b2e]">
       <LoginHeader />
-      <main className="login-main">
-        <BrandPanel />
-        <section className="login-form-section">
-          <div className="login-form-card">
-            {error ? (
-              <>
-                <div className="login-form-header">
-                  <h2>Sign-in failed</h2>
-                  <p>We couldn’t complete Google sign-in. Please try again.</p>
-                </div>
-                <div
-                  className="error-message"
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    padding: "12px",
-                    backgroundColor: "rgba(239, 68, 68, 0.1)",
-                    border: "1px solid rgba(239, 68, 68, 0.3)",
-                    borderRadius: "8px",
-                    color: "#ef4444",
-                    marginTop: "24px",
-                    marginBottom: "16px",
-                  }}
-                >
-                  <AlertCircle size={18} />
-                  <span>{error}</span>
-                </div>
-
-                <button type="button" className="btn-signin" onClick={() => navigate("/login")}>
-                  Back to sign in
-                </button>
-              </>
-            ) : (
-              <div
-                style={{
-                  marginTop: "10px",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "12px",
-                  minHeight: "140px",
-                  color: "#b0c4de",
-                }}
-              >
-                <Loader2
-                  size={28}
-                  className="animate-spin"
-                  style={{ animation: "spin 1s linear infinite" }}
-                />
-                <div style={{ fontSize: "14px" }}>Please wait while we sign you in.</div>
-              </div>
-            )}
+      <main className="flex flex-1 items-center justify-center px-6 py-12">
+        <div className="grid w-full max-w-6xl gap-10 lg:grid-cols-2">
+          <div className="hidden items-center justify-center lg:flex">
+            <BrandPanel />
           </div>
-        </section>
+
+          <section className="flex items-center justify-center">
+            <div className="w-full max-w-[480px] rounded-[18px] bg-[rgba(15,35,56,0.9)] p-9 shadow-[0_30px_60px_rgba(5,9,20,0.45)]">
+              {error ? (
+                <>
+                  <div>
+                    <h2 className="mb-2 text-3xl font-semibold text-white">Sign-in failed</h2>
+                    <p className="text-slate-300">
+                      We couldn&apos;t complete Google sign-in. Please try again.
+                    </p>
+                  </div>
+
+                  <div className="mb-4 mt-6 flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-3 text-red-400">
+                    <AlertCircle size={18} />
+                    <span>{error}</span>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 px-4 py-4 text-base font-semibold text-white transition hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(59,130,246,0.4)]"
+                    onClick={() => navigate("/login")}
+                  >
+                    Back to sign in
+                  </button>
+                </>
+              ) : (
+                <div className="mt-2 flex min-h-[140px] flex-col items-center justify-center gap-3 text-[#b0c4de]">
+                  <Loader2 size={28} className="animate-spin" />
+                  <div className="text-sm">Please wait while we sign you in.</div>
+                </div>
+              )}
+            </div>
+          </section>
+        </div>
       </main>
       <LandingFooter />
     </div>
