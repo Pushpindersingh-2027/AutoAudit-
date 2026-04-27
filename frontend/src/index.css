@@ -5,6 +5,7 @@
    ============================================================================ */
 
 :root {
+  --primary: 15 23 42;
   --secondary: 30 41 59;
 
   /* Surfaces */
@@ -40,15 +41,17 @@
 
 /* Light theme overrides */
 .light {
+  --primary: 248 250 252;
+  --secondary: 255 255 255;
   --surface-1: 248 250 252;
   --surface-2: 255 255 255;
   --border-subtle: 226 232 240;
   --text-strong: 11 18 32;
   --text-muted: 71 85 105;
-  --secondary: 255 255 255;
 }
 
 @theme inline {
+  --color-primary: rgb(var(--primary));
   --color-secondary: rgb(var(--secondary));
   --color-surface-1: rgb(var(--surface-1));
   --color-surface-2: rgb(var(--surface-2));

@@ -229,8 +229,8 @@ const ScanDetailPage: React.FC<ScanDetailPageProps> = ({ sidebarWidth = 220, isD
   }
 
   const pageClass = isDarkMode
-    ? 'min-h-screen bg-slate-900 text-slate-100 p-6 transition-colors duration-300'
-    : 'min-h-screen bg-slate-50 text-slate-900 p-6 transition-colors duration-300';
+    ? 'bg-slate-900 text-slate-100 transition-colors duration-300'
+    : 'bg-slate-50 text-slate-900 transition-colors duration-300';
 
   const cardClass = isDarkMode
     ? 'rounded-xl border border-slate-700 bg-slate-800'
@@ -246,7 +246,6 @@ const ScanDetailPage: React.FC<ScanDetailPageProps> = ({ sidebarWidth = 220, isD
         style={{
           marginLeft: `${sidebarWidth}px`,
           width: `calc(100% - ${sidebarWidth}px)`,
-          transition: 'margin-left 0.4s ease, width 0.4s ease',
         }}
       >
         <div className="mx-auto max-w-5xl">
@@ -264,9 +263,7 @@ const ScanDetailPage: React.FC<ScanDetailPageProps> = ({ sidebarWidth = 220, isD
       <div
         className={pageClass}
         style={{
-          marginLeft: `${sidebarWidth}px`,
           width: `calc(100% - ${sidebarWidth}px)`,
-          transition: 'margin-left 0.4s ease, width 0.4s ease',
         }}
       >
         <div className="mx-auto max-w-5xl">

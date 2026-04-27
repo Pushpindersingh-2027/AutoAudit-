@@ -710,7 +710,7 @@ export default function Dashboard({
                 />
               </div>
 
-              <div className="relative z-1 h-[clamp(300px,34vh,380px)] min-h-75 w-full overflow-hidden">
+              <div className="flex justify-center items-center relative z-1 min-h-75 w-full overflow-hidden">
                 <ComplianceChart
                   isDarkMode={isDarkMode}
                   sidebarWidth={sidebarWidth}

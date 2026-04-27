@@ -274,7 +274,7 @@ const ScansPage: React.FC<ScansPageProps> = ({
 		return (
 			<div
 				className={`min-h-screen p-6 transition-colors duration-300 ${
-					isDarkMode ? "bg-(--bg-primary)" : "bg-slate-50"
+					isDarkMode ? "bg-primary" : "bg-slate-50"
 				}`}
 				style={{
 					marginLeft: `${sidebarWidth}px`,
@@ -295,7 +295,7 @@ const ScansPage: React.FC<ScansPageProps> = ({
 	return (
 		<div
 			className={`min-h-screen p-6 transition-colors duration-300 ${
-				isDarkMode ? "bg-(--bg-primary)" : "bg-slate-50"
+				isDarkMode ? "bg-primary" : "bg-slate-50"
 			}`}
 			style={{
 				marginLeft: `${sidebarWidth}px`,
@@ -419,7 +419,7 @@ const ScansPage: React.FC<ScansPageProps> = ({
 							<div className="flex justify-end gap-3 mt-2">
 								<button
 									type="button"
-									className="toolbar-button secondary"
+									className="flex items-center gap-2 px-4 py-2 rounded-lg text-[14px] font-medium cursor-pointer [transition:all_0.3s_ease] border-none outline-none bg-secondary"
 									onClick={() => setShowForm(false)}
 									disabled={isSubmitting}
 								>
@@ -427,7 +427,7 @@ const ScansPage: React.FC<ScansPageProps> = ({
 								</button>
 								<button
 									type="submit"
-									className="toolbar-button primary"
+									className="flex items-center gap-2 px-4 py-2 rounded-lg text-[14px] font-medium cursor-pointer [transition:all_0.3s_ease] border-none outline-none bg-primary"
 									disabled={isSubmitting}
 								>
 									{isSubmitting ? (
@@ -585,7 +585,7 @@ const ScansPage: React.FC<ScansPageProps> = ({
 											) => e.stopPropagation()}
 										>
 											<button
-												className="toolbar-button danger px-2.5 py-1.5 text-[13px]"
+												className="flex items-center gap-2 rounded-lg font-medium cursor-pointer [transition:all_0.3s_ease] border-none outline-none text-[#ef4444] px-2.5 py-1.5 text-[13px]"
 												onClick={() =>
 													handleDelete(scan.id)
 												}

@@ -258,7 +258,7 @@ const ScanDetailPage: React.FC<ScanDetailPageProps> = ({
 
 	const pageClasses = `min-h-screen p-6 transition-colors duration-300 ${
 		isDarkMode
-			? "bg-[var(--bg-primary)] text-white"
+			? "bg-primary text-white"
 			: "bg-slate-50 text-slate-800"
 	}`;
 
