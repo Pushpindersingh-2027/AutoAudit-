@@ -304,6 +304,7 @@ export type CreateScanPayload = {
   version: string;
 }
 
+// One item in the readiness breakdown shown on the scan form.
 export type ScanReadinessCheck = {
   key: string;
   label: string;
@@ -345,6 +346,7 @@ export async function getScanReadiness(
     version: string;
   }
 ): Promise<ScanReadinessResponse> {
+  // Readiness is a lightweight GET request because it only validates the selected connection and benchmark. It does not create or start a scan.
   const search = new URLSearchParams({
     m365_connection_id: String(params.m365_connection_id),
     framework: params.framework,

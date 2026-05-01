@@ -1,5 +1,5 @@
-# Pre-scan checks for M365 scans.
-# Purpose: this file checks whether the selected M365 connection and benchmarkare ready enough to start a scan.
+# Pre-scan readiness checks for M365 scans.
+# Purpose: this file checks whether the selected M365 connection and benchmark are ready enough to start a scan.
 
 from __future__ import annotations
 from dataclasses import dataclass
@@ -10,7 +10,7 @@ from app.services.m365_graph import (
     validate_m365_connection,
 )
 
-# These permissions are critical for all current benchmarks CIS, so we check them all the time and mark them as "critical".
+# These permissions are critical for the current M365 benchmarks, so we always probe them and treat failures as critical.
 CRITICAL_BASELINE_PERMISSIONS = {
     "Organization.Read.All",
     "User.Read.All",
@@ -18,7 +18,7 @@ CRITICAL_BASELINE_PERMISSIONS = {
 }
 
 # Simple Graph endpoints used to test each permission.
-# If we do not have a probe for a permission, we return it as "unverified".
+# If a permission has no probe yet, readiness reports it as "unverified".
 PERMISSION_PROBES: dict[str, str] = {
     "Organization.Read.All": "/v1.0/organization?$top=1&$select=id",
     "User.Read.All": "/v1.0/users?$top=1&$select=id",
@@ -31,6 +31,7 @@ PERMISSION_PROBES: dict[str, str] = {
 }
 
 @dataclass
+# One item shown in the readiness UI.
 class ReadinessCheck:
     key: str
     label: str
@@ -39,6 +40,7 @@ class ReadinessCheck:
     message: str
 
 @dataclass
+# Final readiness payload returned to the API layer.
 class ReadinessResult:
     ready: bool
     summary: str
@@ -71,8 +73,7 @@ def extract_graph_error_detail(response: httpx.Response) -> str | None:
     return None
 
 # Return the permissions declared for controls marked as ready.
-# The scan engine only runs controls whose 'automation_status' is 'ready'.
-# Readiness follows the same rule and collects permissions from those controls only.
+# The scan engine only runs controls whose 'automation_status' is 'ready', so readiness follows the same rule and ignores manual or blocked controls.
 def extract_required_permissions(controls: list[dict]) -> list[str]:
     permissions: set[str] = set()
 
@@ -87,12 +88,12 @@ def extract_required_permissions(controls: list[dict]) -> list[str]:
     return sorted(permissions)
 
 # Check whether a tenant looks ready before starting a scan.
-# This method:
-# 1. checks that the saved M365 credentials can log in
-# 2. gets a Microsoft Graph token
-# 3. checks the permissions declared by benchmark metadata
-# 4. returns simple pass / warn / fail results for the UI
-# It does not start the scan. It is only a pre-check.
+# Flow:
+# 1. validate the saved M365 app credentials
+# 2. get a Microsoft Graph access token
+# 3. probe the permissions declared by benchmark metadata
+# 4. return pass / warn / fail results for the UI
+# This is only a pre-check. It does not start the scan.
 async def evaluate_scan_readiness(
     *,
     tenant_id: str,
@@ -104,6 +105,7 @@ async def evaluate_scan_readiness(
     missing_permissions: set[str] = set()
     unverified_permissions: set[str] = set()
 
+    # First prove the saved app credentials can authenticate at all.
     try:
         await validate_m365_connection(
             tenant_id=tenant_id,
@@ -138,6 +140,7 @@ async def evaluate_scan_readiness(
             checks=checks,
         )
 
+    # If login worked, get the access token used for permission probes.
     try:
         access_token = await acquire_graph_access_token(
             tenant_id=tenant_id,
@@ -163,8 +166,7 @@ async def evaluate_scan_readiness(
             checks=checks,
         )
 
-    # Always check a small baseline set because these are commonly needed,
-    # even when the benchmark declares only a few permissions.
+    # Always check a small baseline set because these permissions are commonly needed even when the benchmark declares only a few extra permissions.
     permissions_to_probe = sorted(
         set(required_permissions).union(CRITICAL_BASELINE_PERMISSIONS)
     )
@@ -188,6 +190,7 @@ async def evaluate_scan_readiness(
                 )
                 continue
 
+            # Each probe is a lightweight Graph request that exercises one permission without starting the real scan workflow.
             try:
                 response = await http.get(
                     probe_path,
@@ -260,7 +263,7 @@ async def evaluate_scan_readiness(
     if ready and (missing_permissions or unverified_permissions):
         summary = "Ready with warnings: some controls may be skipped or fail."
 
-    # Return the full details for the UI to display.
+    # Return the full details so the UI can show both the headline status and the per-permission breakdown.
     return ReadinessResult(
         ready=ready,
         summary=summary,
