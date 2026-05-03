@@ -76,10 +76,12 @@ const AdminRoute: React.FC<RouteWrapperProps> = ({ children }) => {
 
   useEffect(() => {
     if (isLoading) return;
+
     if (!isAuthenticated) {
       navigate('/login');
       return;
     }
+
     if ((user as { role?: string } | null | undefined)?.role !== 'admin') {
       navigate('/dashboard');
     }
@@ -89,10 +91,12 @@ const AdminRoute: React.FC<RouteWrapperProps> = ({ children }) => {
     return <div className="loading">Loading...</div>;
   }
 
-  return isAuthenticated && (user as { role?: string } | null | undefined)?.role === 'admin' ? <>{children}</> : null;
+  return isAuthenticated && (user as { role?: string } | null | undefined)?.role === 'admin'
+    ? <>{children}</>
+    : null;
 };
 
-// Dashboard Layout Component (with sidebar)
+// Dashboard Layout Component with sidebar
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   children,
   sidebarWidth,
@@ -113,12 +117,18 @@ function App(): JSX.Element {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Show marketing footer only on public pages.
+  const showMarketingFooter = ['/', '/about', '/contact'].includes(location.pathname);
+
   // Dashboard state
   const getInitialSidebarWidth = (): number => {
     if (typeof window === 'undefined') return 220;
+
     try {
       const stored = window.localStorage.getItem('sidebarExpanded');
+
       if (stored === null) return 220;
+
       return stored === 'true' ? 220 : 80;
     } catch {
       return 220;
@@ -132,9 +142,11 @@ function App(): JSX.Element {
   useEffect(() => {
     const theme = localStorage.getItem('theme') ?? 'dark';
     const dark = theme === 'dark';
+
     setIsDarkMode(dark);
 
     const root = document.documentElement;
+
     if (dark) {
       root.classList.remove('light');
     } else {
@@ -142,16 +154,19 @@ function App(): JSX.Element {
     }
   }, []);
 
-  // Scroll restoration:
-  // - On route changes without hash, go to top.
-  // - Keep hash-based anchor behavior (e.g. /#features) intact.
+  // Scroll restoration
   useEffect(() => {
     if (location.hash) return;
+
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
   }, [location.pathname, location.hash]);
 
   // Authentication handlers
-  const handleUserLogin = async (email: string, password: string, remember: boolean = true): Promise<void> => {
+  const handleUserLogin = async (
+    email: string,
+    password: string,
+    remember: boolean = true,
+  ): Promise<void> => {
     await auth.login(email, password, remember);
     navigate('/dashboard');
   };
@@ -176,10 +191,12 @@ function App(): JSX.Element {
 
   const handleThemeToggle = (): void => {
     const newThemeIsDark = !isDarkMode;
+
     setIsDarkMode(newThemeIsDark);
     localStorage.setItem('theme', newThemeIsDark ? 'dark' : 'light');
 
     const root = document.documentElement;
+
     if (newThemeIsDark) {
       root.classList.remove('light');
     } else {
@@ -202,9 +219,7 @@ function App(): JSX.Element {
 
         <Route
           path="/about"
-          element={
-            <AboutUs onSignInClick={() => navigate('/login')} />
-          }
+          element={<AboutUs onSignInClick={() => navigate('/login')} />}
         />
 
         <Route
@@ -358,16 +373,90 @@ function App(): JSX.Element {
 
         <Route path="/styleguide" element={<StyleGuide />} />
 
-        {/* Fallback route */}
+        {/* Fallback Route */}
         <Route
           path="*"
-          element={
-            <LandingPage
-              onSignInClick={() => navigate('/login')}
-            />
-          }
+          element={<LandingPage onSignInClick={() => navigate('/login')} />}
         />
       </Routes>
+
+      {showMarketingFooter && (
+        <>
+          <section className="autoaudit-readiness-section">
+            <div className="autoaudit-readiness-content">
+              <div className="autoaudit-readiness-text">
+                <span className="autoaudit-section-label">Audit Readiness</span>
+                <h2>Built to support faster compliance preparation</h2>
+                <p>
+                  AutoAudit brings evidence review, cloud visibility, and audit tracking
+                  into one streamlined workflow, helping teams stay prepared before
+                  compliance reviews begin.
+                </p>
+              </div>
+
+              <div className="autoaudit-readiness-cards">
+                <div className="autoaudit-readiness-card">
+                  <h3>Evidence Visibility</h3>
+                  <p>Organise and review audit evidence across connected systems.</p>
+                </div>
+
+                <div className="autoaudit-readiness-card">
+                  <h3>Risk Awareness</h3>
+                  <p>Highlight compliance gaps early so teams can respond before audit deadlines.</p>
+                </div>
+
+                <div className="autoaudit-readiness-card">
+                  <h3>Workflow Clarity</h3>
+                  <p>Keep compliance tasks clear, trackable, and easier to manage.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <footer className="autoaudit-footer">
+            <div className="autoaudit-footer-content">
+              <div className="autoaudit-footer-brand">
+                <h3>AutoAudit</h3>
+                <p>
+                  AutoAudit helps teams streamline audit preparation, manage compliance
+                  evidence, and improve visibility across security and governance workflows.
+                </p>
+              </div>
+
+              <div className="autoaudit-footer-column">
+                <h4>Platform</h4>
+                <p>Compliance Dashboard</p>
+                <p>Evidence Scanner</p>
+                <p>Cloud Integrations</p>
+                <p>Audit Reports</p>
+              </div>
+
+              <div className="autoaudit-footer-column">
+                <h4>Security</h4>
+                <p>Secure Evidence Review</p>
+                <p>Policy Alignment</p>
+                <p>Access Control</p>
+                <p>Risk Monitoring</p>
+              </div>
+
+              <div className="autoaudit-footer-column">
+                <h4>Project</h4>
+                <p>Open-source Contribution</p>
+                <p>Frontend Enhancement</p>
+                <p>Responsive UI Design</p>
+                <p>Built for Audit Readiness</p>
+              </div>
+            </div>
+
+            <div className="autoaudit-footer-bottom">
+              <p>
+                © 2026 AutoAudit. Built to support secure, reliable, and automated
+                compliance workflows.
+              </p>
+            </div>
+          </footer>
+        </>
+      )}
     </div>
   );
 }
