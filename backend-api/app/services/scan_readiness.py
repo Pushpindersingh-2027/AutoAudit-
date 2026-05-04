@@ -197,6 +197,7 @@ async def evaluate_scan_readiness(
                     headers={"Authorization": f"Bearer {access_token}"},
                 )
             except Exception:
+                unverified_permissions.add(permission)
                 checks.append(
                     ReadinessCheck(
                         key=f"perm_{permission}",
@@ -238,6 +239,7 @@ async def evaluate_scan_readiness(
                 )
                 continue
 
+            unverified_permissions.add(permission)
             checks.append(
                 ReadinessCheck(
                     key=f"perm_{permission}",
