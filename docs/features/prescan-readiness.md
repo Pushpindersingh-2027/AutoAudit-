@@ -39,6 +39,33 @@ The backend collects `requires_permissions` only from controls where:
 
 This keeps readiness aligned with the subset of controls that the scan engine is expected to run.
 
+## Current Scope and Known Gaps
+PreScan Readiness is intentionally lightweight.
+
+Today it is strongest for Microsoft Graph-based permission checks, but it does not yet cover every permission path used by the scan engine.
+
+Known gaps to call out:
+
+- some permissions declared in benchmark metadata are not yet directly probed by readiness
+- this is especially relevant for Exchange Online PowerShell-heavy connectivity and some Entra governance or device-management collectors
+- examples currently called out in review are:
+  - `Exchange.Manage`
+  - `DeviceManagementConfiguration.Read.All`
+  - `AccessReview.Read.All`
+  - `AuditLog.Read.All`
+
+This does not mean every benchmark needs all of these permissions.
+
+Different benchmarks and different controls use different collectors, so the exact permission set depends on what the user is planning to run.
+
+Because of that, the current readiness result should be treated as an early pre-check, not a full guarantee that every runtime permission path has been verified.
+
+Future improvement:
+
+- expand direct probe coverage for missing declared permissions
+- better scope readiness checks to the exact benchmark and control set the user intends to run
+- improve coverage for PowerShell-backed checks as well as Graph-based checks
+
 ## Outcome
 PreScan Readiness returns one of three practical outcomes:
 
@@ -103,4 +130,5 @@ Main implementation files:
 - It is a lightweight pre-check before the worker starts.
 - It mainly validates authentication and required Microsoft Graph permissions.
 - It uses benchmark metadata as the permission source of truth.
+- It does not yet verify every permission path used by every collector.
 - It improves usability by warning early and reducing avoidable failed scan attempts.
