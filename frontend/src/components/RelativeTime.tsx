@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { formatAbsoluteTooltipAEST, parseDateBestEffortForRelative } from '../utils/helpers';
+import { formatAbsoluteTooltipAEST, parseDateForRelativeTime } from '../utils/helpers';
 
 export type RelativeTimeLocale = Intl.LocalesArgument;
 
@@ -36,7 +36,7 @@ export function toIsoTimestamp(
   value: string | number | Date | null | undefined,
   referenceNowMs: number = Date.now()
 ): string | undefined {
-  const d = parseDateBestEffortForRelative(value, referenceNowMs);
+  const d = parseDateForRelativeTime(value, referenceNowMs);
   return d?.toISOString();
 }
 
@@ -45,7 +45,7 @@ export function formatRelativeTime(
   now: Date = new Date(),
   locale?: RelativeTimeLocale
 ): string {
-  const d = parseDateBestEffortForRelative(value, now.getTime());
+  const d = parseDateForRelativeTime(value, now.getTime());
   if (!d) return '-';
 
   const rtf = new Intl.RelativeTimeFormat(locale ?? undefined, { numeric: 'auto' });

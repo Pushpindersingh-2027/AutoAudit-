@@ -14,7 +14,7 @@ export const formatDate = (date: string | number | Date): string => {
 // Standardized GMT/UTC date+time formatting for consistent display across users/machines.
 // - Date: "DD Mon YYYY"
 // - Time: "h:mm:ss.SSS AM GMT"
-export function parseDateAssumingUTC(value: string | number | Date | null | undefined): Date | null {
+function parseDateAssumingUTC(value: string | number | Date | null | undefined): Date | null {
   if (!value) return null;
   if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value;
 
@@ -40,7 +40,7 @@ function parseDateAssumingLocal(value: string | number | Date | null | undefined
   return Number.isNaN(d.getTime()) ? null : d;
 }
 
-export function parseDateBestEffortForRelative(
+export function parseDateForRelativeTime(
   value: string | number | Date | null | undefined,
   nowMs: number
 ): Date | null {
