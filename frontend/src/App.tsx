@@ -482,49 +482,6 @@ function App(): JSX.Element {
               </div>
             </div>
           </section>
-
-          <footer className="autoaudit-footer">
-            <div className="autoaudit-footer-content">
-              <div className="autoaudit-footer-brand">
-                <h3>AutoAudit</h3>
-                <p>
-                  AutoAudit helps teams streamline audit preparation, manage compliance
-                  evidence, and improve visibility across security and governance workflows.
-                </p>
-              </div>
-
-              <div className="autoaudit-footer-column">
-                <h4>Platform</h4>
-                <p>Compliance Dashboard</p>
-                <p>Evidence Scanner</p>
-                <p>Cloud Integrations</p>
-                <p>Audit Reports</p>
-              </div>
-
-              <div className="autoaudit-footer-column">
-                <h4>Security</h4>
-                <p>Secure Evidence Review</p>
-                <p>Policy Alignment</p>
-                <p>Access Control</p>
-                <p>Risk Monitoring</p>
-              </div>
-
-              <div className="autoaudit-footer-column">
-                <h4>Project</h4>
-                <p>Open-source Platform</p>
-                <p>Frontend Interface</p>
-                <p>Responsive UI Design</p>
-                <p>Built for Audit Readiness</p>
-              </div>
-            </div>
-
-            <div className="autoaudit-footer-bottom">
-              <p>
-                © 2026 AutoAudit. Built to support secure, reliable, and automated
-                compliance workflows.
-              </p>
-            </div>
-          </footer>
         </>
       )}
     </div>
