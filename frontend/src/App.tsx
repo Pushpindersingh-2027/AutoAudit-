@@ -51,6 +51,37 @@ type SignUpData = {
   password: string;
 };
 
+const LoadingScreen = (): JSX.Element => (
+  <div className="flex justify-center items-center h-screen bg-slate-900">
+    <div className="text-center">
+      <div className="animate-spin">
+        <svg
+          className="w-8 h-8 text-blue-500"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          />
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          />
+        </svg>
+      </div>
+      <p className="mt-4 text-slate-400">Loading...</p>
+    </div>
+  </div>
+);
+
 // Protected Route Component
 const ProtectedRoute: React.FC<RouteWrapperProps> = ({ children }) => {
   const navigate = useNavigate();
@@ -63,19 +94,7 @@ const ProtectedRoute: React.FC<RouteWrapperProps> = ({ children }) => {
   }, [isAuthenticated, isLoading, navigate]);
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen bg-slate-900">
-        <div className="text-center">
-          <div className="animate-spin">
-            <svg className="w-8 h-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-            </svg>
-          </div>
-          <p className="mt-4 text-slate-400">Loading...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   return isAuthenticated ? <>{children}</> : null;
@@ -88,35 +107,27 @@ const AdminRoute: React.FC<RouteWrapperProps> = ({ children }) => {
 
   useEffect(() => {
     if (isLoading) return;
+
     if (!isAuthenticated) {
       navigate('/login');
       return;
     }
+
     if ((user as { role?: string } | null | undefined)?.role !== 'admin') {
       navigate('/dashboard');
     }
   }, [isAuthenticated, isLoading, navigate, user]);
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen bg-slate-900">
-        <div className="text-center">
-          <div className="animate-spin">
-            <svg className="w-8 h-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-            </svg>
-          </div>
-          <p className="mt-4 text-slate-400">Loading...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
-  return isAuthenticated && (user as { role?: string } | null | undefined)?.role === 'admin' ? <>{children}</> : null;
+  return isAuthenticated && (user as { role?: string } | null | undefined)?.role === 'admin'
+    ? <>{children}</>
+    : null;
 };
 
-// Dashboard Layout Component (with sidebar)
+// Dashboard Layout Component with sidebar
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   children,
   sidebarWidth,
@@ -137,12 +148,17 @@ function App(): JSX.Element {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const showPublicEnhancements = ['/', '/about', '/contact'].includes(location.pathname);
+
   // Dashboard state
   const getInitialSidebarWidth = (): number => {
     if (typeof window === 'undefined') return 220;
+
     try {
       const stored = window.localStorage.getItem('sidebarExpanded');
+
       if (stored === null) return 220;
+
       return stored === 'true' ? 220 : 80;
     } catch {
       return 220;
@@ -156,9 +172,11 @@ function App(): JSX.Element {
   useEffect(() => {
     const theme = localStorage.getItem('theme') ?? 'dark';
     const dark = theme === 'dark';
+
     setIsDarkMode(dark);
 
     const root = document.documentElement;
+
     if (dark) {
       root.classList.remove('light');
     } else {
@@ -166,16 +184,19 @@ function App(): JSX.Element {
     }
   }, []);
 
-  // Scroll restoration:
-  // - On route changes without hash, go to top.
-  // - Keep hash-based anchor behavior (e.g. /#features) intact.
+  // Scroll restoration
   useEffect(() => {
     if (location.hash) return;
+
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
   }, [location.pathname, location.hash]);
 
   // Authentication handlers
-  const handleUserLogin = async (email: string, password: string, remember: boolean = true): Promise<void> => {
+  const handleUserLogin = async (
+    email: string,
+    password: string,
+    remember: boolean = true,
+  ): Promise<void> => {
     await auth.login(email, password, remember);
     navigate('/dashboard');
   };
@@ -200,10 +221,12 @@ function App(): JSX.Element {
 
   const handleThemeToggle = (): void => {
     const newThemeIsDark = !isDarkMode;
+
     setIsDarkMode(newThemeIsDark);
     localStorage.setItem('theme', newThemeIsDark ? 'dark' : 'light');
 
     const root = document.documentElement;
+
     if (newThemeIsDark) {
       root.classList.remove('light');
     } else {
@@ -226,9 +249,7 @@ function App(): JSX.Element {
 
         <Route
           path="/about"
-          element={
-            <AboutUs onSignInClick={() => navigate('/login')} />
-          }
+          element={<AboutUs onSignInClick={() => navigate('/login')} />}
         />
 
         <Route
@@ -382,16 +403,130 @@ function App(): JSX.Element {
 
         <Route path="/styleguide" element={<StyleGuide />} />
 
-        {/* Fallback route */}
+        {/* Fallback Route */}
         <Route
           path="*"
-          element={
-            <LandingPage
-              onSignInClick={() => navigate('/login')}
-            />
-          }
+          element={<LandingPage onSignInClick={() => navigate('/login')} />}
         />
       </Routes>
+
+      {showPublicEnhancements && (
+        <>
+          <section className="autoaudit-readiness-section">
+            <div className="autoaudit-readiness-content">
+              <div className="autoaudit-readiness-text">
+                <span className="autoaudit-section-label">Audit Readiness</span>
+                <h2>Built to support faster compliance preparation</h2>
+                <p>
+                  AutoAudit brings evidence review, cloud visibility, and audit tracking
+                  into one streamlined workflow, helping teams stay prepared before
+                  compliance reviews begin.
+                </p>
+              </div>
+
+              <div className="autoaudit-readiness-cards">
+                <div className="autoaudit-readiness-card">
+                  <h3>Evidence Visibility</h3>
+                  <p>Organise and review audit evidence across connected systems.</p>
+                </div>
+
+                <div className="autoaudit-readiness-card">
+                  <h3>Risk Awareness</h3>
+                  <p>Highlight compliance gaps early so teams can respond before audit deadlines.</p>
+                </div>
+
+                <div className="autoaudit-readiness-card">
+                  <h3>Workflow Clarity</h3>
+                  <p>Keep compliance tasks clear, trackable, and easier to manage.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="autoaudit-value-section">
+            <div className="autoaudit-value-container">
+              <div className="autoaudit-value-header">
+                <span className="autoaudit-section-label">Platform Value</span>
+                <h2>Designed for clear, secure, and reliable audit workflows</h2>
+                <p>
+                  The public interface now communicates AutoAudit’s value more clearly by
+                  highlighting usability, consistency, compliance focus, and responsive access
+                  across different screen sizes.
+                </p>
+              </div>
+
+              <div className="autoaudit-value-grid">
+                <div className="autoaudit-value-card">
+                  <span>01</span>
+                  <h3>Clear Navigation</h3>
+                  <p>Supports users in understanding audit-related features with less friction.</p>
+                </div>
+
+                <div className="autoaudit-value-card">
+                  <span>02</span>
+                  <h3>Consistent Interface</h3>
+                  <p>Strengthens the visual structure of public-facing product sections.</p>
+                </div>
+
+                <div className="autoaudit-value-card">
+                  <span>03</span>
+                  <h3>Compliance Focus</h3>
+                  <p>Highlights evidence, risk, and governance workflows in a professional way.</p>
+                </div>
+
+                <div className="autoaudit-value-card">
+                  <span>04</span>
+                  <h3>Responsive Layout</h3>
+                  <p>Improves the presentation across desktop, tablet, and mobile screens.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <footer className="autoaudit-footer">
+            <div className="autoaudit-footer-content">
+              <div className="autoaudit-footer-brand">
+                <h3>AutoAudit</h3>
+                <p>
+                  AutoAudit helps teams streamline audit preparation, manage compliance
+                  evidence, and improve visibility across security and governance workflows.
+                </p>
+              </div>
+
+              <div className="autoaudit-footer-column">
+                <h4>Platform</h4>
+                <p>Compliance Dashboard</p>
+                <p>Evidence Scanner</p>
+                <p>Cloud Integrations</p>
+                <p>Audit Reports</p>
+              </div>
+
+              <div className="autoaudit-footer-column">
+                <h4>Security</h4>
+                <p>Secure Evidence Review</p>
+                <p>Policy Alignment</p>
+                <p>Access Control</p>
+                <p>Risk Monitoring</p>
+              </div>
+
+              <div className="autoaudit-footer-column">
+                <h4>Project</h4>
+                <p>Open-source Platform</p>
+                <p>Frontend Interface</p>
+                <p>Responsive UI Design</p>
+                <p>Built for Audit Readiness</p>
+              </div>
+            </div>
+
+            <div className="autoaudit-footer-bottom">
+              <p>
+                © 2026 AutoAudit. Built to support secure, reliable, and automated
+                compliance workflows.
+              </p>
+            </div>
+          </footer>
+        </>
+      )}
     </div>
   );
 }
