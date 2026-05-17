@@ -52,11 +52,11 @@ type SignUpData = {
 };
 
 const LoadingScreen = (): JSX.Element => (
-  <div className="flex justify-center items-center h-screen bg-slate-900">
+  <div className="flex h-screen items-center justify-center bg-slate-900">
     <div className="text-center">
       <div className="animate-spin">
         <svg
-          className="w-8 h-8 text-blue-500"
+          className="h-8 w-8 text-blue-500"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -412,73 +412,126 @@ function App(): JSX.Element {
 
       {showPublicEnhancements && (
         <>
-          <section className="autoaudit-readiness-section">
-            <div className="autoaudit-readiness-content">
-              <div className="autoaudit-readiness-text">
-                <span className="autoaudit-section-label">Audit Readiness</span>
-                <h2>Built to support faster compliance preparation</h2>
-                <p>
-                  AutoAudit brings evidence review, cloud visibility, and audit tracking
-                  into one streamlined workflow, helping teams stay prepared before
-                  compliance reviews begin.
+          <section className="w-full bg-gradient-to-b from-surface-1 to-surface-2 px-6 py-16 text-text-strong">
+            <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.1fr_1.9fr] lg:items-center">
+              <div>
+                <span className="inline-flex rounded-full border border-accent-teal/20 bg-accent-teal/10 px-3 py-2 text-xs font-bold uppercase tracking-wide text-accent-teal">
+                  Audit Readiness
+                </span>
+
+                <h2 className="mt-4 max-w-2xl text-3xl font-bold leading-tight md:text-4xl">
+                  Built to support faster compliance preparation
+                </h2>
+
+                <p className="mt-4 max-w-2xl text-sm leading-7 text-text-muted md:text-base">
+                  AutoAudit brings evidence review, cloud visibility, and audit
+                  tracking into one streamlined workflow, helping teams stay
+                  prepared before compliance reviews begin.
                 </p>
               </div>
 
-              <div className="autoaudit-readiness-cards">
-                <div className="autoaudit-readiness-card">
-                  <h3>Evidence Visibility</h3>
-                  <p>Organise and review audit evidence across connected systems.</p>
-                </div>
+              <div className="grid gap-5 md:grid-cols-3">
+                <article className="min-h-40 rounded-2xl border border-text-muted/20 bg-surface-1/60 p-6 shadow-lg transition hover:-translate-y-1 hover:border-accent-teal/30 hover:shadow-xl">
+                  <h3 className="text-base font-bold text-text-strong">
+                    Evidence Visibility
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-text-muted">
+                    Organise and review audit evidence across connected systems.
+                  </p>
+                </article>
 
-                <div className="autoaudit-readiness-card">
-                  <h3>Risk Awareness</h3>
-                  <p>Highlight compliance gaps early so teams can respond before audit deadlines.</p>
-                </div>
+                <article className="min-h-40 rounded-2xl border border-text-muted/20 bg-surface-1/60 p-6 shadow-lg transition hover:-translate-y-1 hover:border-accent-teal/30 hover:shadow-xl">
+                  <h3 className="text-base font-bold text-text-strong">
+                    Risk Awareness
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-text-muted">
+                    Highlight compliance gaps early so teams can respond before
+                    audit deadlines.
+                  </p>
+                </article>
 
-                <div className="autoaudit-readiness-card">
-                  <h3>Workflow Clarity</h3>
-                  <p>Keep compliance tasks clear, trackable, and easier to manage.</p>
-                </div>
+                <article className="min-h-40 rounded-2xl border border-text-muted/20 bg-surface-1/60 p-6 shadow-lg transition hover:-translate-y-1 hover:border-accent-teal/30 hover:shadow-xl">
+                  <h3 className="text-base font-bold text-text-strong">
+                    Workflow Clarity
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-text-muted">
+                    Keep compliance tasks clear, trackable, and easier to manage.
+                  </p>
+                </article>
               </div>
             </div>
           </section>
 
-          <section className="autoaudit-value-section">
-            <div className="autoaudit-value-container">
-              <div className="autoaudit-value-header">
-                <span className="autoaudit-section-label">Platform Value</span>
-                <h2>Designed for clear, secure, and reliable audit workflows</h2>
-                <p>
-                  The public interface now communicates AutoAudit’s value more clearly by
-                  highlighting usability, consistency, compliance focus, and responsive access
-                  across different screen sizes.
+          <section className="w-full bg-surface-1 px-6 py-16 text-text-strong">
+            <div className="mx-auto max-w-7xl">
+              <div className="mb-9 max-w-3xl">
+                <span className="inline-flex rounded-full border border-accent-teal/20 bg-accent-teal/10 px-3 py-2 text-xs font-bold uppercase tracking-wide text-accent-teal">
+                  Platform Value
+                </span>
+
+                <h2 className="mt-4 text-3xl font-bold leading-tight md:text-4xl">
+                  Designed for clear, secure, and reliable audit workflows
+                </h2>
+
+                <p className="mt-4 text-sm leading-7 text-text-muted md:text-base">
+                  The public interface now communicates AutoAudit’s value more
+                  clearly by highlighting usability, consistency, compliance
+                  focus, and responsive access across different screen sizes.
                 </p>
               </div>
 
-              <div className="autoaudit-value-grid">
-                <div className="autoaudit-value-card">
-                  <span>01</span>
-                  <h3>Clear Navigation</h3>
-                  <p>Supports users in understanding audit-related features with less friction.</p>
-                </div>
+              <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+                <article className="rounded-2xl border border-text-muted/20 bg-surface-2/70 p-6 shadow-lg transition hover:-translate-y-1 hover:border-accent-teal/30 hover:shadow-xl">
+                  <span className="text-xs font-extrabold uppercase tracking-wide text-accent-teal">
+                    01
+                  </span>
+                  <h3 className="mt-4 text-base font-bold text-text-strong">
+                    Clear Navigation
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-text-muted">
+                    Supports users in understanding audit-related features with
+                    less friction.
+                  </p>
+                </article>
 
-                <div className="autoaudit-value-card">
-                  <span>02</span>
-                  <h3>Consistent Interface</h3>
-                  <p>Strengthens the visual structure of public-facing product sections.</p>
-                </div>
+                <article className="rounded-2xl border border-text-muted/20 bg-surface-2/70 p-6 shadow-lg transition hover:-translate-y-1 hover:border-accent-teal/30 hover:shadow-xl">
+                  <span className="text-xs font-extrabold uppercase tracking-wide text-accent-teal">
+                    02
+                  </span>
+                  <h3 className="mt-4 text-base font-bold text-text-strong">
+                    Consistent Interface
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-text-muted">
+                    Strengthens the visual structure of public-facing product
+                    sections.
+                  </p>
+                </article>
 
-                <div className="autoaudit-value-card">
-                  <span>03</span>
-                  <h3>Compliance Focus</h3>
-                  <p>Highlights evidence, risk, and governance workflows in a professional way.</p>
-                </div>
+                <article className="rounded-2xl border border-text-muted/20 bg-surface-2/70 p-6 shadow-lg transition hover:-translate-y-1 hover:border-accent-teal/30 hover:shadow-xl">
+                  <span className="text-xs font-extrabold uppercase tracking-wide text-accent-teal">
+                    03
+                  </span>
+                  <h3 className="mt-4 text-base font-bold text-text-strong">
+                    Compliance Focus
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-text-muted">
+                    Highlights evidence, risk, and governance workflows in a
+                    professional way.
+                  </p>
+                </article>
 
-                <div className="autoaudit-value-card">
-                  <span>04</span>
-                  <h3>Responsive Layout</h3>
-                  <p>Improves the presentation across desktop, tablet, and mobile screens.</p>
-                </div>
+                <article className="rounded-2xl border border-text-muted/20 bg-surface-2/70 p-6 shadow-lg transition hover:-translate-y-1 hover:border-accent-teal/30 hover:shadow-xl">
+                  <span className="text-xs font-extrabold uppercase tracking-wide text-accent-teal">
+                    04
+                  </span>
+                  <h3 className="mt-4 text-base font-bold text-text-strong">
+                    Responsive Layout
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-text-muted">
+                    Improves the presentation across desktop, tablet, and mobile
+                    screens using Tailwind utility classes.
+                  </p>
+                </article>
               </div>
             </div>
           </section>
