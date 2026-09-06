@@ -1,13 +1,8 @@
 """Health-check helpers for the AutoAudit backend."""
 
-import logging
-
 from sqlalchemy import text
 
 from app.db.base import engine
-
-
-logger = logging.getLogger("api")
 
 
 async def database_ready() -> bool:
@@ -24,5 +19,4 @@ async def database_ready() -> bool:
         return True
 
     except Exception:  # pylint: disable=broad-exception-caught
-        logger.exception("Database readiness check failed")
         return False
